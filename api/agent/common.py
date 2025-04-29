@@ -2,7 +2,7 @@ import json
 import os
 import contextlib
 from pathlib import Path
-from typing import Any, Callable, Coroutine, Union
+from typing import Any, Callable, Coroutine, Union, Set
 
 import prompty
 from azure.ai.projects.aio import AIProjectClient
@@ -11,14 +11,26 @@ from azure.ai.projects.models import (
     RunStep,
     ThreadMessage,
     ThreadRun,
+    ToolSet, FunctionTool, AsyncFunctionTool, AsyncToolSet
 )
 from azure.identity.aio import DefaultAzureCredential
 from prompty.core import Prompty
 
+import sys
+from pathlib import Path
+
+# Add the project root to sys.path
+sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
+
 from api.agent.model import Agent, AgentStatus
 
+from api.agent.user_logic_apps import AzureLogicAppTool, create_post_to_linkedln_func
 
-FOUNDRY_CONNECTION = os.environ.get("FOUNDRY_CONNECTION", "EMPTY")
+# Load environment variables
+from dotenv import load_dotenv
+load_dotenv()
+
+FOUNDRY_CONNECTION = "westus.api.azureml.ms;91d27443-f037-45d9-bb0c-428256992df6;contoso-enterprises-rg;sustineo-agents-project"
 foundry_agents: dict[str, Agent] = {}
 custom_agents: dict[str, Prompty] = {}
 
@@ -72,7 +84,7 @@ class SustineoAgentEventHandler(AsyncAgentEventHandler[str]):
                         agentName=self.agent.name,
                         callId=self.call_id,
                         name="step",
-                        status=message.status,
+                        status="completed",
                         type=message.type,
                         content=message.step_details.as_dict(),
                     )
@@ -96,8 +108,12 @@ class SustineoAgentEventHandler(AsyncAgentEventHandler[str]):
                         agentName=self.agent.name,
                         callId=self.call_id,
                         name="message",
-                        status=message.status,
-                        content=message.content[0].as_dict(),
+                        status="completed",
+                        type="thread_message",
+                        content={
+                            "type": "thread_message",
+                            "thread_message": [m.as_dict() for m in message.content],
+                        }
                     )
                 )
             else:
@@ -206,6 +222,41 @@ async def execute_foundry_agent(
 
     async with get_foundry_project_client() as project_client:
         server_agent = await project_client.agents.get_agent(agent.id)
+
+        if server_agent.id == "asst_nIvPDzKZCkWUbMmHR9teEDk5":
+            
+            # Extract subscription and resource group from the project scope
+            subscription_id = "91d27443-f037-45d9-bb0c-428256992df6"
+            resource_group = "contoso-enterprises-rg"
+
+            # Logic App details
+            logic_app_name = "post-to-channels"
+            trigger_name = "When_a_HTTP_request_is_received"  # Default name for HTTP triggers in Azure Portal
+
+            # Create and initialize AzureLogicAppTool utility
+            logic_app_tool = AzureLogicAppTool(subscription_id, resource_group)
+            logic_app_tool.register_logic_app(logic_app_name, trigger_name)
+            print(f"Registered logic app '{logic_app_name}' with trigger '{trigger_name}'.")
+
+            # Create the specialized Logic App posting function
+
+            post_to_linkedln = create_post_to_linkedln_func(logic_app_tool, logic_app_name)
+
+            # Prepare the function tools for the agent
+            #functions_to_use: Set = { post_to_linkedln }
+            functions_to_use: Set[Callable[..., Any]] = {
+                post_to_linkedln
+            }
+            functions = AsyncFunctionTool(functions=functions_to_use)
+            project_client.agents.enable_auto_function_calls(function_tool=functions)
+            toolset = AsyncToolSet()
+            toolset.add(functions)
+
+            await project_client.agents.update_agent(
+                agent_id=server_agent.id,
+                toolset=toolset,
+            )
+
         thread = await project_client.agents.create_thread()
         await project_client.agents.create_message(
             thread_id=thread.id,
@@ -229,9 +280,12 @@ if __name__ == "__main__":
     agents = asyncio.run(get_foundry_agents())
     print("Foundry agents loaded successfully.")
 
-    agent = agents["bing_search_agent"]
+    print("Available agents:")
+    for agent in agents.values():
+        print(f"- {agent.name} ({agent.id})")
+    agent = agents["linkedln_post_agent"]
     instr = "This agent can use the web to find information on current winter camping trends in 2025, especially related to tents and outdoor gear. The search results should return any relevant insights or popular practices."
-    query = "winter camping trends 2025 tents outdoor gear"
+    query = "please create a new blob titled: GA Azure AI Agent Service ad content: coming soon!"
     # instr = "This agent can use the web to find information on the Azure AI Foundry Agent Service. The search results should return any relevant insights or popular practices."
     # query = "latest news Azure AI Foundry Agent Service"
 
