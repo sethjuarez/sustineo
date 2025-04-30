@@ -1,0 +1,18 @@
+@use "../../app/defaults.scss" as *;
+@use 'sass:color';
+
+.message {
+  border: solid 1px color.change($color-zinc-100, $alpha: 0.2);
+  border-radius: 10px;
+  color: $color-zinc-100;
+  padding: 10px;
+  font-size: 1.05rem;
+}
+
+.assistant {
+  margin-right: 25px;
+}
+
+.user {
+  margin-left: 25px;
+}

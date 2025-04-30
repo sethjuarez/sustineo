@@ -3,6 +3,9 @@ import styles from "./effortlist.module.scss";
 import clsx from "clsx";
 import { useEffortStore, type Effort } from "store/effort";
 import usePersistStore from "store/usepersiststore";
+import AgentMessage from "./effort/agentmessage";
+import AgentFunction from "./effort/agentfunction";
+import AgentEffort from "./effort/agenteffort";
 
 const EffortList = () => {
   const ref = React.useRef<HTMLDivElement>(null);
@@ -34,44 +37,11 @@ const EffortList = () => {
   const getContent = (effort: Effort) => {
     switch (effort.type) {
       case "message":
-        return (
-          <div
-            className={clsx(styles.message, effort.role === "user" ? styles.user : styles.assistant)}
-          >
-            {effort.content}
-          </div>
-        );
+        return <AgentMessage message={effort} />;
       case "function":
-        return (
-          <div className={styles.function}>
-            <div className={styles.functionCall}>
-              <span>Agent</span>&nbsp;
-              <span className={styles.functionName}>{effort.name}</span>
-            </div>
-            <div className={styles.functionArgs}>
-              {/* enumerate args dictionary */}
-              {Object.entries(effort.arguments).map(([key, value], index) => {
-                return (
-                  <div key={index} className={styles.functionArg} title={key}>
-                    {typeof value === "object"
-                      ? JSON.stringify(value)
-                      : value?.toString()}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        );
+        return <AgentFunction func={effort} />;
       case "agent":
-        return (
-          <>
-            <div className={styles.functionCall}>
-              <span className={styles.functionName}>{effort.agentName}</span>
-              <span>{effort.type}</span>
-              <span>{effort.status}</span>
-            </div>
-          </>
-        );
+        return <AgentEffort agent={effort} />;
       default:
         return <div className={styles.nothing}>Nothing</div>;
     }
@@ -84,13 +54,7 @@ const EffortList = () => {
   return (
     <div className={clsx(styles.container, styles.scrollbarHide)} ref={ref}>
       {effort?.efforts.map((item, index) => {
-        return (
-          <div
-            key={index}
-          >
-            {getContent(item)}
-          </div>
-        );
+        return <div key={index}>{getContent(item)}</div>;
       })}
     </div>
   );

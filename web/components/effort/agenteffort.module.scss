@@ -1,0 +1,45 @@
+@use "../../app/defaults.scss" as *;
+@use 'sass:color';
+
+.agent {
+  font-weight: 200;
+  font-size: 1rem;
+  color: $color-zinc-300;
+}
+
+.title {
+  display: flex;
+  flex-direction: row;
+  gap: 0.3rem;
+  font-weight: 400;
+  justify-items: center;
+  font-size: 0.75rem;
+  margin-right: 0.75rem;
+  color: color.change($color-zinc-100, $alpha: 0.5);
+  user-select: none;
+  cursor: pointer;
+}
+
+.status {
+  font-weight: 400;
+  font-size: 0.75rem;
+  color: color.change($color-zinc-100, $alpha: 0.5);
+  display: flex;
+  flex-direction: row;
+  gap: 0.3rem;
+  user-select: none;
+  cursor: pointer;
+}
+
+.grow {
+  flex-grow: 1;
+}
+
+.agentName {
+  color: color.change($color-fuchsia-300, $alpha: 0.5);
+}
+
+.tool {
+  color: color.change($color-fuchsia-300, $alpha: 0.5);
+  font-size: 0.75rem;
+}
