@@ -15,6 +15,7 @@ const availableUsers: { [key: string]: string } = {
   "seth-juarez": "/images/people/seth-juarez.jpg",
   "yina-arenas": "/images/people/yina-arenas.jpg",
   "zia-mansoor": "/images/people/zia-mansoor.jpg",
+  "amanda-foster": "/images/people/amanda-foster.jpg",
 };
 
 const defaultUser: User = {
