@@ -16,21 +16,11 @@ from azure.ai.projects.models import (
 from azure.identity.aio import DefaultAzureCredential
 from prompty.core import Prompty
 
-import sys
-from pathlib import Path
-
-# Add the project root to sys.path
-sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
-
 from api.agent.model import Agent, AgentStatus
 
 from api.agent.user_logic_apps import AzureLogicAppTool, create_post_to_linkedln_func
 
-# Load environment variables
-from dotenv import load_dotenv
-load_dotenv()
-
-FOUNDRY_CONNECTION = "westus.api.azureml.ms;91d27443-f037-45d9-bb0c-428256992df6;contoso-enterprises-rg;sustineo-agents-project"
+FOUNDRY_CONNECTION = os.environ.get("FOUNDRY_CONNECTION", "EMPTY")
 foundry_agents: dict[str, Agent] = {}
 custom_agents: dict[str, Prompty] = {}
 
