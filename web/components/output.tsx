@@ -2,14 +2,15 @@ import * as d3 from "d3";
 import styles from "./output.module.scss";
 import { useRef } from "react";
 import useDimensions from "store/usedimensions";
-import { type DataNode } from "store/work";
+import type { OutputNode, Data } from "store/output";
+import TextOutput from "./output/textoutput";
 
 type Props = {
-  data?: DataNode;
+  data?: OutputNode;
 };
 
-const Work: React.FC<Props> = ({ data }: Props) => {
-  if (!data) {
+const Output: React.FC<Props> = ({ data }: Props) => {
+  if (!data || !data.children || data.children.length === 0) {
     return <div className={styles.container}></div>;
   } else {
     const chartRef = useRef<HTMLDivElement>(null);
@@ -23,13 +24,20 @@ const Work: React.FC<Props> = ({ data }: Props) => {
       .sort((a, b) => (b.value || 0) - (a.value || 0));
 
     const root = d3
-      .treemap<DataNode>()
+      .treemap<OutputNode>()
       .tile(d3.treemapBinary)
       .size([dms.boundedWidth, dms.boundedHeight])
       .padding(1.5)
       .round(true)(hierarchy);
 
-    //console.log(root.leaves());
+    const getContent = (data: Data) => {
+      switch (data.type) {
+        case "text":
+          return <TextOutput text={data} />;
+        default:
+          return <div>Unknown type</div>;
+      }
+    };
 
     return (
       <div className={styles.container} ref={chartRef}>
@@ -88,17 +96,20 @@ const Work: React.FC<Props> = ({ data }: Props) => {
                   clipPath={`url(#clip-${i})`}
                 >
                   <tspan x={5} dy="0.25em">
-                    {d
-                      .ancestors()
-                      .slice(0, -1)
-                      .reverse()
-                      .map((d) => d.data.title.replace(" ", "-"))
-                      .join(".")}
-                  </tspan>
-                  <tspan x={5} dy="1.2em">
-                    {d.data.value}
+                    {d.data.title}
                   </tspan>
                 </text>
+                {d.data.data && (
+                  <foreignObject
+                    x={5}
+                    y={25}
+                    width={Math.max(d.x1 - d.x0 - 12, 1)}
+                    height={Math.max(d.y1 - d.y0 - 30, 1)}
+                    clipPath={`url(#clip-${i})`}
+                  >
+                    {getContent(d.data.data)}
+                  </foreignObject>
+                )}
               </g>
             ))}
           </g>
@@ -108,4 +119,4 @@ const Work: React.FC<Props> = ({ data }: Props) => {
   }
 };
 
-export default Work;
+export default Output;

@@ -1,9 +1,9 @@
 @use "../app/defaults.scss" as *;
 
 .button {
-  background-color:$color-fuchsia-100;
-  color: $color-zinc-700;
-  border: solid 1px $color-fuchsia-300;
+  background-color: $color-zinc-50;
+  color: $color-zinc-800;
+  border: solid 3px $color-zinc-300;
   border-radius: 50%;
   width: 32px;
   height: 32px;
