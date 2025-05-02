@@ -27,7 +27,7 @@ const Work: React.FC<Props> = ({ data }: Props) => {
       .treemap<DataNode>()
       .tile(d3.treemapBinary)
       .size([dms.boundedWidth, dms.boundedHeight])
-      .padding(1.5)
+      .padding(2.5)
       .round(true)(hierarchy);
 
     // Reset the first render flag on unmount
