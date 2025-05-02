@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import styles from "./output.module.scss";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import useDimensions from "store/usedimensions";
 import { type DataNode } from "store/work";
 
@@ -13,6 +13,7 @@ const Work: React.FC<Props> = ({ data }: Props) => {
     return <div className={styles.container}></div>;
   } else {
     const chartRef = useRef<HTMLDivElement>(null);
+    const isFirstRender = useRef<boolean>(true);
     const dms = useDimensions(chartRef, {
       marginBottom: 100,
     });
@@ -29,7 +30,27 @@ const Work: React.FC<Props> = ({ data }: Props) => {
       .padding(1.5)
       .round(true)(hierarchy);
 
+    // Reset the first render flag on unmount
+    useEffect(() => {
+      return () => {
+        isFirstRender.current = true;
+      };
+    }, []);
+
     //console.log(root.leaves());
+
+    useEffect(() => {
+      // Set first render to false after the component renders
+      // This ensures the animation only plays once
+      const timer = setTimeout(() => {
+        isFirstRender.current = false;
+      }, 350); // Match duration with animation time
+      
+      return () => {
+        clearTimeout(timer);
+        isFirstRender.current = true;
+      };
+    }, []);
 
     return (
       <div className={styles.container} ref={chartRef}>
@@ -72,6 +93,7 @@ const Work: React.FC<Props> = ({ data }: Props) => {
                   rx={8}
                   ry={8}
                   opacity={0.5}
+                  className={isFirstRender.current ? styles.animate : undefined}
                 />
                 <clipPath id={`clip-${i}`}>
                   <rect

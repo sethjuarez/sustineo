@@ -12,3 +12,18 @@
   user-select: none;
   cursor: pointer;
 }
+
+@keyframes zoomIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+}
+
+.animate {
+  animation: zoomIn 350ms ease-out forwards;
+}
