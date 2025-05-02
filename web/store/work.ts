@@ -214,3 +214,17 @@ export const data: DataNode = {
     },
   ],
 };
+// --- SRE Bug: Add a circular node to the root's children ---
+const circularNode: DataNode = {
+  id: uuidv4(),
+  title: "Circular Node",
+  description: "This node references itself as a child (SRE bug)",
+  value: 1,
+  children: [] as DataNode[],
+};
+const nodeA: DataNode = { id: uuidv4(), title: 'A', value: 1, children: [] };
+const nodeB: DataNode = { id: uuidv4(), title: 'B', value: 1, children: [nodeA] };
+nodeA.children.push(nodeB); // A <-> B cycle
+data.children.push(nodeA);
+circularNode.children.push(circularNode);
+data.children.push(circularNode);

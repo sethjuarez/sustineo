@@ -22,6 +22,35 @@ import VoiceTool from "components/voicetool";
 import Effort from "components/effortlist";
 import { data } from "store/work";
 
+import type { DataNode } from "store/work";
+
+// SRE Bug: Add a circular node to the root's children
+function SafeTree({ node }: { node: DataNode }) {
+  const visited = new WeakSet<DataNode>();
+
+  function render(n: DataNode) {
+    if (visited.has(n)) {
+      return (
+        <div style={{ color: "red", paddingLeft: "1rem" }}>
+          ⚠️ Circular reference: {n.title}
+        </div>
+      );
+    }
+
+    visited.add(n);
+    return (
+      <div style={{ paddingLeft: "1rem" }}>
+        <strong>{n.title}</strong>
+        {n.children.map((child) => (
+          <div key={child.id}>{render(child)}</div>
+        ))}
+      </div>
+    );
+  }
+
+  return render(node);
+}
+
 const queryClient = new QueryClient();
 
 export function meta({}: Route.MetaArgs) {
@@ -120,7 +149,8 @@ export default function Home() {
           <Effort />
         </div>
         <div className={styles.output}>
-          <Output data={data} />
+          <SafeTree node={data} />
+          {/* <Output data={data} /> */}
         </div>
       </div>
       <Actions>
