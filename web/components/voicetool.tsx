@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./voicetool.module.scss";
 import clsx from "clsx";
-import { HiMiniMicrophone } from "react-icons/hi2";
+import MicrophoneIcon from "./icons/MicrophoneIcon";
 
 interface Props {
   onClick: () => void;
@@ -12,7 +12,7 @@ const VoiceTool: React.FC<Props> = ({ onClick, className }) => {
   const style = className ? clsx(styles.button, className) : styles.button;
   return (
     <div className={style} onClick={onClick}>
-      <HiMiniMicrophone size={48} />
+      <MicrophoneIcon className={styles.icon} />
     </div>
   );
 };
