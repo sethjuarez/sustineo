@@ -2,7 +2,7 @@ import * as d3 from "d3";
 import styles from "./output.module.scss";
 import { useRef } from "react";
 import useDimensions from "store/usedimensions";
-import { type DataNode } from "store/work";
+import { type DataNode, sanitizeDataTree } from "store/work";
 
 type Props = {
   data?: DataNode;
@@ -17,8 +17,11 @@ const Work: React.FC<Props> = ({ data }: Props) => {
       marginBottom: 100,
     });
 
+    // Sanitize the data to remove circular references
+    const sanitizedData = sanitizeDataTree(data);
+
     const hierarchy = d3
-      .hierarchy(data)
+      .hierarchy(sanitizedData)
       .sum((d) => d.value)
       .sort((a, b) => (b.value || 0) - (a.value || 0));
 

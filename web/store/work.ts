@@ -8,6 +8,53 @@ export interface DataNode {
   children: DataNode[];
 }
 
+/**
+ * Sanitizes a data tree by removing circular references
+ * @param node The root node of the data tree
+ * @returns A new data tree with no circular references
+ */
+export function sanitizeDataTree(node: DataNode): DataNode {
+  const seen = new WeakMap<object, boolean>();
+  
+  function clone(node: DataNode): DataNode {
+    // If we've seen this exact object before, return a simple node with just the ID and title
+    // to break the circular reference but maintain node identity
+    if (seen.has(node)) {
+      return {
+        id: node.id,
+        title: node.title,
+        value: node.value,
+        children: []
+      };
+    }
+    
+    // Mark this node as seen
+    seen.set(node, true);
+    
+    // Clone the node with its properties
+    const clonedNode: DataNode = {
+      id: node.id,
+      title: node.title,
+      value: node.value,
+      children: []
+    };
+    
+    // Add description if present
+    if (node.description) {
+      clonedNode.description = node.description;
+    }
+    
+    // Process children recursively
+    if (node.children && Array.isArray(node.children)) {
+      clonedNode.children = node.children.map(child => clone(child));
+    }
+    
+    return clonedNode;
+  }
+  
+  return clone(node);
+}
+
 export const data: DataNode = {
   id: uuidv4(),
   title: "root",
