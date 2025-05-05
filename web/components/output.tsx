@@ -12,20 +12,26 @@ type Props = {
 
 const Output: React.FC<Props> = ({ data }: Props) => {
   const chartRef = useRef<HTMLDivElement>(null);
-  const [shouldAnimate, setShouldAnimate] = useState(true);
+  const isFirstRender = useRef(true);
   
-  useEffect(() => {
-    // This will run only once when the component mounts
-    // Animation will be applied on initial render
-    // After the animation completes, we could set shouldAnimate to false if needed
-    return () => {
-      // Cleanup if necessary
-    };
-  }, []);
+  // We're using a ref instead of state to track if this is the initial render
+  // This ensures the animation only runs once on initial mount, even if the component re-renders
   
   const dms = useDimensions(chartRef, {
     marginBottom: 100,
   });
+  
+  // Reset the isFirstRender flag after the component has mounted
+  useEffect(() => {
+    // Set isFirstRender to false after a delay that's slightly longer than the animation
+    const timerId = setTimeout(() => {
+      isFirstRender.current = false;
+    }, 400); // 400ms is slightly longer than our 350ms animation
+    
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, []);
 
   const hierarchy = d3
     .hierarchy(data)
@@ -96,7 +102,7 @@ const Output: React.FC<Props> = ({ data }: Props) => {
                   rect.setAttribute("fill", "#B7AEF0");
                 }
               }}
-              className={`${styles.item} ${shouldAnimate ? styles.animate : ''}`}
+              className={`${styles.item} ${isFirstRender.current ? styles.animate : ''}`}
             >
               <rect
                 id={i + "_rect"}

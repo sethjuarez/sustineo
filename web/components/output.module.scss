@@ -26,4 +26,5 @@
 
 .animate {
   animation: zoomIn 350ms ease-out forwards;
+  transform-origin: center center;
 }
