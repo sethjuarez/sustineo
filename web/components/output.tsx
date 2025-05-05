@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import styles from "./output.module.scss";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import useDimensions from "store/usedimensions";
 import type { OutputNode, Data } from "store/output";
 import TextOutput from "./output/textoutput";
@@ -12,6 +12,17 @@ type Props = {
 
 const Output: React.FC<Props> = ({ data }: Props) => {
   const chartRef = useRef<HTMLDivElement>(null);
+  const [shouldAnimate, setShouldAnimate] = useState(true);
+  
+  useEffect(() => {
+    // This will run only once when the component mounts
+    // Animation will be applied on initial render
+    // After the animation completes, we could set shouldAnimate to false if needed
+    return () => {
+      // Cleanup if necessary
+    };
+  }, []);
+  
   const dms = useDimensions(chartRef, {
     marginBottom: 100,
   });
@@ -85,7 +96,7 @@ const Output: React.FC<Props> = ({ data }: Props) => {
                   rect.setAttribute("fill", "#B7AEF0");
                 }
               }}
-              className={styles.item}
+              className={`${styles.item} ${shouldAnimate ? styles.animate : ''}`}
             >
               <rect
                 id={i + "_rect"}
