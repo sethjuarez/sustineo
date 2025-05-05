@@ -26,5 +26,5 @@
 
 .animate {
   animation: zoomIn 350ms ease-out forwards;
-  transform-origin: center center;
+  transform-origin: top left; /* Changed from center center to prevent overlapping */
 }
