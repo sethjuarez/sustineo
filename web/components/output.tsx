@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import styles from "./output.module.scss";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import useDimensions from "store/usedimensions";
 import type { OutputNode, Data } from "store/output";
 import TextOutput from "./output/textoutput";
@@ -12,9 +12,18 @@ type Props = {
 
 const Output: React.FC<Props> = ({ data }: Props) => {
   const chartRef = useRef<HTMLDivElement>(null);
+  const [animate, setAnimate] = useState(true);
+  
   const dms = useDimensions(chartRef, {
     marginBottom: 100,
   });
+
+  useEffect(() => {
+    // Animation will only be applied once on mount
+    // The useState initializes animate to true
+    // We don't need to change it later since
+    // we want the animation only on initial render
+  }, []);
 
   const hierarchy = d3
     .hierarchy(data)
@@ -85,7 +94,7 @@ const Output: React.FC<Props> = ({ data }: Props) => {
                   rect.setAttribute("fill", "#B7AEF0");
                 }
               }}
-              className={styles.item}
+              className={`${styles.item} ${animate ? styles.animated : ""}`}
             >
               <rect
                 id={i + "_rect"}
