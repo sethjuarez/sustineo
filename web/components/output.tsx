@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import styles from "./output.module.scss";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import useDimensions from "store/usedimensions";
 import type { OutputNode, Data } from "store/output";
 import TextOutput from "./output/textoutput";
