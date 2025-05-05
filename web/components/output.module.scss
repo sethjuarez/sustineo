@@ -26,4 +26,5 @@
 
 .animated {
   animation: zoomIn 350ms ease-out forwards;
+  will-change: transform, opacity;
 }
