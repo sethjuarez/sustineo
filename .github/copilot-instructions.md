@@ -62,3 +62,8 @@ The following guidelines are intended to help maintain a consistent code style a
 - Include brief descriptions for non-obvious code
 - Comment complex logic with explanations of intent
 - Document any workarounds or browser-specific code
+
+# Repository Details
+
+We are using the `DamovisaInc` organization and the repository is called `sustineo`.
+When referring to this repository, use `DamovisaInc/sustineo`.

@@ -23,7 +23,7 @@ export const defaultConfiguration: VoiceConfiguration = {
   silence: 500,
   prefix: 300,
   inputDeviceId: "default",
-  voice: "sage"
+  voice: "shimmer"
 };
 
 export class Player {
