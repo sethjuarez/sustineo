@@ -37,8 +37,8 @@ const queryClient = new QueryClient();
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "sustineō" },
-    { name: "description", content: "Your Digital Support Agent" },
+    { title: "vibetravel" },
+    { name: "description", content: "Your AI travel agent" },
   ];
 }
 
