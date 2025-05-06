@@ -86,7 +86,7 @@ const Output: React.FC<Props> = ({ data }: Props) => {
                 //output?.changeValue(d.data.id, 10);
                 if (rect) {
                   rect.setAttribute("opacity", "0.9");
-                  rect.setAttribute("fill", "#E5ACA3");
+                  rect.setAttribute("fill", "#ACA3C5");
                 }
               }}
               onMouseOut={() => {
@@ -94,7 +94,7 @@ const Output: React.FC<Props> = ({ data }: Props) => {
                 //output?.changeValue(d.data.id, 1);
                 if (rect) {
                   rect.setAttribute("opacity", "0.5");
-                  rect.setAttribute("fill", "#B7AEF0");
+                  rect.setAttribute("fill", "#AEB7F0");
                 }
               }}
               className={styles.item}
@@ -130,7 +130,7 @@ const Output: React.FC<Props> = ({ data }: Props) => {
                 getContent(
                   d.data.data,
                   0,
-                  0,
+                  30,
                   Math.max(d.x1 - d.x0, 1),
                   Math.max(d.y1 - d.y0, 1),
                   `url(#clip-${i})`
