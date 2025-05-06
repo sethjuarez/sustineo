@@ -16,13 +16,14 @@ const availableUsers: { [key: string]: string } = {
   "yina-arenas": "/images/people/yina-arenas.jpg",
   "zia-mansoor": "/images/people/zia-mansoor.jpg",
   "amanda-foster": "/images/people/amanda-foster.jpg",
+  "kedasha-kerr": "/images/people/kedasha-kerr.jpg",
 };
 
 const defaultUser: User = {
-  key: "seth-juarez",
-  name: "Seth Juarez",
-  email: "seth.juarez@microsoft.com",
-  avatar: "/images/people/seth-juarez.jpg",
+  key: "kedasha-kerr",
+  name: "Kedasha Kerr",
+  email: "ladykerr@github.com",
+  avatar: "/images/people/kedasha-kerr.jpg",
 };
 
 const getUser = async (): Promise<User> => {
