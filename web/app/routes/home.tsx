@@ -177,9 +177,8 @@ export default function Home() {
   };
 
   return (
-    <QueryClientProvider client={queryClient}>
+    <Layout version={version} user={user}>
       <main className={styles.home}>
-        <Title text="sustineō" version={version} user={user} />
         <div className={styles.scratch}>
           <div className={styles.effort}>
             <Effort />
@@ -270,10 +269,12 @@ export default function Home() {
             id={"voice-agent-settings"}
             icon={<TbArticle size={18} />}
             className={styles.editor}
-          >
-            <AgentEditor />
+            <QueryClientProvider client={queryClient}>
+              <AgentEditor />
+            </QueryClientProvider>
           </Setting>
         </Settings>
+        {talking && <div>!!!!!!!!!!!!!!!</div>}
       </main>
       <VideoImagePicker
         show={showCapture}
@@ -289,5 +290,6 @@ export default function Home() {
         }}
       />
     </QueryClientProvider>
+    </Layout>
   );
 }
