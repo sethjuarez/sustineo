@@ -170,7 +170,7 @@ export default function Home() {
   return (
     <QueryClientProvider client={queryClient}>
       <main className={styles.home}>
-        <Title text="sustineō" version={version} user={user} />
+        <Title text="Vibe Travel" version={version} user={user} />
         <div className={styles.scratch}>
           <div className={styles.effort}>
             <Effort />

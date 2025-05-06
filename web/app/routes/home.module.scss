@@ -1,12 +1,15 @@
 @use "../defaults.scss" as *;
 
 .home {
-  width: 100wv;
+  width: 100vw;
   height: 100vh;
-  background-image: url('/images/background.svg');
-  background-position: top left;
+  min-height: 100vh;
+  min-width: 100vw;
+  background-image: url('/images/liberia-background-adjusted.jpg');
+  background-position: center center;
   background-repeat: no-repeat;
   background-size: cover;
+  background-attachment: fixed;
 }
 
 .scratch {
