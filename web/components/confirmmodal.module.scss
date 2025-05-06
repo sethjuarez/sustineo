@@ -1,0 +1,62 @@
+/* ConfirmModal styles */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 24px rgba(0,0,0,0.18);
+  padding: 2rem 2.5rem 1.5rem 2.5rem;
+  min-width: 320px;
+  max-width: 90vw;
+  text-align: center;
+}
+
+.title {
+  margin: 0 0 1rem 0;
+  font-size: 1.25rem;
+  color: #222;
+}
+
+.message {
+  margin: 0 0 2rem 0;
+  color: #444;
+}
+
+.buttonRow {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.button {
+  padding: 0.5rem 1.5rem;
+  border-radius: 6px;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  background: #eee;
+  color: #333;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  transition: background 0.15s;
+}
+.button:hover {
+  background: #ddd;
+}
+.buttonPrimary {
+  background: #6c47ff;
+  color: #fff;
+}
+.buttonPrimary:hover {
+  background: #5436c7;
+}
