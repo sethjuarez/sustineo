@@ -26,4 +26,5 @@
 
 .animateBlock {
   animation: zoomIn 330ms ease-out forwards;
+  animation-delay: var(--animation-delay, 0ms);
 }

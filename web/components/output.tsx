@@ -81,6 +81,7 @@ const Output: React.FC<Props> = ({ data }: Props) => {
                 ry={8}
                 opacity={0.5}
                 className={mounted ? styles.animateBlock : ""}
+                style={mounted ? { '--animation-delay': `${i * 20}ms` } as React.CSSProperties : undefined}
               />
               <clipPath id={`clip-${i}`}>
                 <rect
