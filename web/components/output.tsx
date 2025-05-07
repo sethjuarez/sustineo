@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import styles from "./output.module.scss";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import useDimensions from "store/usedimensions";
 import type { OutputNode, Data } from "store/output";
 import TextOutput from "./output/textoutput";
@@ -11,9 +11,14 @@ type Props = {
 
 const Output: React.FC<Props> = ({ data }: Props) => {
   const chartRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
   const dms = useDimensions(chartRef, {
     marginBottom: 100,
   });
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const hierarchy = d3
     .hierarchy(data)
@@ -75,6 +80,7 @@ const Output: React.FC<Props> = ({ data }: Props) => {
                 rx={8}
                 ry={8}
                 opacity={0.5}
+                className={mounted ? styles.animateBlock : ""}
               />
               <clipPath id={`clip-${i}`}>
                 <rect
