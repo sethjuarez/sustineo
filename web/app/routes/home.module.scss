@@ -35,7 +35,7 @@
   max-width: 700px;
   padding: 2rem;
   margin-top: 80px; // Add margin-top to account for header
-  margin-bottom: 120px; // Push content up to make room for mic
+  margin-bottom: 2rem; // Adjusted to make room for the How It Works section
 
   h1 {
     font-size: 3.5rem;
@@ -49,6 +49,73 @@
     font-size: 1.25rem;
     line-height: 1.5;
     opacity: 0.9;
+  }
+}
+
+.howItWorks {
+  width: 100%;
+  padding: 4rem 1rem;
+  background: linear-gradient(to bottom, #E8A47F, #5A3FBB);
+}
+
+.howItWorksContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+
+  h2 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 3rem;
+    color: white;
+    
+    @media (max-width: 768px) {
+      font-size: 2.5rem;
+    }
+  }
+}
+
+.featureGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.featureCard {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 1rem;
+  padding: 2.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+  }
+  
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+  }
+  
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #5A3FBB;
+  }
+  
+  p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #52525b;
   }
 }
 
