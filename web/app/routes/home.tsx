@@ -24,6 +24,26 @@ export default function Landing() {
         </a>
         <Social />
       </div>
+      
+      <div className={styles.featuresSection}>
+        <div className={styles.featuresContainer}>
+          <h2>How Build Events Works</h2>
+          <div className={styles.featuresGrid}>
+            <div className={styles.featureCard}>
+              <h3>Voice-Guided Planning</h3>
+              <p>Speak your event details, AI guides you through planning.</p>
+            </div>
+            <div className={styles.featureCard}>
+              <h3>Smart Recommendations</h3>
+              <p>Personalized suggestions for venues, vendors, and more.</p>
+            </div>
+            <div className={styles.featureCard}>
+              <h3>End-to-End Support</h3>
+              <p>Help from concept to final execution.</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
