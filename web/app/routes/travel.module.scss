@@ -1,0 +1,59 @@
+@use "../defaults.scss" as *;
+@use 'sass:color';
+
+.home {
+  width: 100vw;
+  height: 100vh;
+  min-height: 100vh;
+  min-width: 100vw;
+  background-image: url('/images/liberia-background-adjusted.jpg');
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+.scratch {
+  position: fixed;
+  top: 0;
+  left: 0;
+  border: solid 1px $color-fuchsia-100;
+  width: calc(100vw - 0.2rem);
+  height: calc(100vh - 0.2rem);
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+
+.effort {
+  //border: solid 1px $color-fuchsia-100;
+  width: 20rem;
+  padding-top: 6rem;
+  display: flex;
+  flex-direction: column;
+  background-color: color.change($color-zinc-800, $alpha: 0.6);
+  margin-left: 0px;
+}
+
+.output {
+  //border: solid 1px $color-fuchsia-200;
+  width: calc(100vw - 22.5rem);
+  padding-top: 6rem;
+  padding-right: 2.5rem;
+}
+
+.talking {
+  color: red;
+}
+
+.editor {
+  max-width: 1280px;
+  width: calc(100vw - 5rem);
+  left: 1rem;
+}
+
+.voice {
+  width: 640px;
+  left: calc(50px + 2rem);
+}
