@@ -1,50 +1,72 @@
-@use "../defaults.scss" as *;
-
-.home {
-  width: 100wv;
-  height: 100vh;
-}
-
-.scratch {
-  position: fixed;
-  top: 0;
-  left: 0;
-  border: solid 1px $color-fuchsia-100;
-  width: calc(100vw - 0.2rem);
-  height: calc(100vh - 0.2rem);
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  overflow: hidden;
-}
-
-.effort {
-  //border: solid 1px $color-fuchsia-100;
-  width: 20rem;
-  padding-top: 6rem;
+.landing {
   display: flex;
   flex-direction: column;
-  margin-left: 2.5rem;
+  height: 100%;
+  width: 100%;
 }
 
-.output {
-  //border: solid 1px $color-fuchsia-200;
-  width: calc(100vw - 22.5rem);
-  padding-top: 6rem;
-  padding-right: 2.5rem;
+.root {
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('/images/background.svg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: -1;
+  }
 }
 
-.talking {
-  color: red;
+.container {
+  text-align: center;
+  color: white;
+  max-width: 700px;
+  padding: 2rem;
+  margin-top: 80px; // Add margin-top to account for header
+  margin-bottom: 120px; // Push content up to make room for mic
+
+  h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+    color: white;
+  }
+
+  p {
+    font-size: 1.25rem;
+    line-height: 1.5;
+    opacity: 0.9;
+  }
 }
 
-.editor {
-  max-width: 1280px;
-  width: calc(100vw - 5rem);
-  left: 1rem;
+.micContainer {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: translateX(-50%) scale(1.05);
+  }
 }
 
-.voice {
-  width: 640px;
-  left: calc(50px + 2rem);
+.micIcon {
+  width: 142px;
+  height: 142px;
+  filter: drop-shadow(0px 4px 20px rgba(0, 0, 0, 0.1));
 }
