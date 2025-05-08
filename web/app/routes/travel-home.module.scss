@@ -1,0 +1,72 @@
+.landing {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.root {
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('/images/liberia-background-adjusted.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: -1;
+  }
+}
+
+.container {
+  text-align: center;
+  color: white;
+  max-width: 700px;
+  padding: 2rem;
+  margin-top: 80px; // Add margin-top to account for header
+  margin-bottom: 120px; // Push content up to make room for mic
+
+  h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+    color: white;
+  }
+
+  p {
+    font-size: 1.25rem;
+    line-height: 1.5;
+    opacity: 0.9;
+  }
+}
+
+.micContainer {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: translateX(-50%) scale(1.05);
+  }
+}
+
+.micIcon {
+  width: 142px;
+  height: 142px;
+  filter: drop-shadow(0px 4px 20px rgba(0, 0, 0, 0.1));
+}
