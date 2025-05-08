@@ -1,7 +1,8 @@
 {
-    "app": "travel",
+    "app": "events",
     "app_icon": "mic",
     "app_name": "Build Events by Contoso",
     "app_header": ["What can we", "start working on?"],
-    "app_description": "Talk through your ideas and let's make them reality."
+    "app_description": "Talk through your ideas and let's make them reality.",
+    "icon_link": "/app"
 }

@@ -20,7 +20,7 @@ export default function Landing() {
           ))}</h1>
           <p>{landingsettings.app_description}</p>
         </div>
-        <a href="/app">
+        <a href={landingsettings.icon_link}>
             <div className={styles.micContainer}>
             {landingsettings.app_icon === 'chat' ? (
               <ChatIcon
