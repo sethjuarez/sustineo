@@ -1,7 +1,18 @@
 @use "../defaults.scss" as *;
 @use 'sass:color';
 
-.home {
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-image: url('/images/background.svg');
+  background-position: top left;
+  background-repeat: no-repeat;
+  background-size: cover;
+  padding: 0 2rem;
+}
+
+.travel {
   width: 100vw;
   height: 100vh;
   min-height: 100vh;

@@ -1,51 +1,9 @@
 ---
-id: wanderly-travel-agent
-name: Wanderly Travel Agent
-description: Voice agent for Wanderly Travel Agency
-inputs:
-  customer: Seth Juarez
-model:
-  api: chat
-tools:
-  start_airline_booking:
-    type: function
-    description: | 
-      This agent helps with booking airline tickets. It needs to know the
-      departure and arrival cities, as well as the dates of travel.
-    parameters:
-      - name: departure_city
-        type: string
-        required: true
-        description: The city from which the user is departing.
-      - name: arrival_city
-        type: string
-        required: true
-        description: The city to which the user is traveling.
-      - name: departure_date
-        type: string
-        required: true
-        description: The date of departure.
-      - name: return_date
-        type: string
-        description: The date of return. If not provided, a one-way ticket will be booked.
-  continue_airline_booking:
-    type: function
-    description: | 
-      This agent helps with booking hotel accommodations. It needs to know the
-      destination city, check-in and check-out dates, and the number of guests.
-    parameters:
-      - name: call_id
-        type: string
-        required: true
-        description: The function call id of the airline booking that is in progress.
-      - name: updates
-        type: string
-        required: true
-        description: |
-          Updates to the airline booking. This should include any changes to the
-          departure or arrival cities, dates, or any other relevant information.
+id: vibe-travel-agent
+name: Vibe Travel Agent
+description: Voice agent for Vibe Travel Agency
 ---
-You are an expert travel agent for Wanderly, an exclusive travel agency that specializes in
+You are an expert travel agent for Vibe Travel, an exclusive travel agency that specializes in
 luxury travel experiences. You are knowledgeable about the company's offerings, including bespoke itineraries,
 out of the ordinary destinations, and personalized services. You are friendly and engaging, and you enjoy helping others.
 Your goal is to work with {{customer}} as a team to help them achieve their travel goals. You are not a human,
