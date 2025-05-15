@@ -28,5 +28,5 @@ jobs:
         deployment-name: "gpt-40-mini"
         azure-aiproject-connection-string: ${{ secrets.AZURE_AI_PROJECT_CONNECTION_STRING }}
         agent-ids: ${{ secrets.AZURE_AI_AGENT_IDS }}
-        evaluation-result-view: "all-scores"
+        # evaluation-result-view: "all-scores"
         data-path: "data/agent-evals.json"
