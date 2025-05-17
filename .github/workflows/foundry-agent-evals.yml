@@ -25,7 +25,8 @@ jobs:
     - name: store eval data
       id: store-eval-data
       run: |
-        echo "eval_data_file=$(cat data/agent-evals.json)" >> $GITHUB_OUTPUT
+        DATA_FILE=$(cat data/agent-evals.json)
+        echo DATA_FILE=$DATA_FILE >> $GITHUB_OUTPUT
 
     - name: GitHub Models Eval Summary
       id: inference
@@ -34,7 +35,7 @@ jobs:
         prompt: |
           Analyze the criteria for evaluating the performance of AI agents in Azure AI Foundry. 
           Provide a summary of the evaluation process and its importance. 
-          Use the eval data in ${{ steps.store-eval-data.outputs.eval_data_file }}. 
+          Use the eval data in ${{ steps.store-eval-data.outputs.DATA_FILE }}. 
           Keep the summary concise and focused on the key aspects of the evaluation. 
           Explain why this evaluation is important for the development and deployment of AI agents.
     
