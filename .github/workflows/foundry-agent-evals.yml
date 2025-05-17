@@ -35,21 +35,18 @@ jobs:
         system-prompt: |
           You are an AI assistant that is knowledgeable about the evaluation of AI agents in Azure AI Foundry. 
           Your task is to analyze the evaluation criteria and summarize the evaluation process.
-          You should explain the importance of this evaluation for the development and deployment of AI agents to someone who is not familiar with the topic.
+          Your summary should target someone who is not familiar with the topic.
         prompt: |
-          Analyze the criteria for evaluating the performance of AI agents in Azure AI Foundry. 
-          Provide a summary of the evaluation process and its importance. 
-          Use the eval data in ${{ steps.store-eval-data.outputs.DATA_FILE }}. 
+          Analyze the criteria for evaluating the performance of AI agents in Azure AI Foundry.
+          Use the eval data in ${{ steps.store-eval-data.outputs.DATA_FILE }}.
+          Provide a concise and focused summary of the evaluation process and its importance. 
           Explain why this evaluation is important for the development and deployment of AI agents.
-          Keep the summary concise and focused on the key aspects of the evaluation.
           Keep the response under 200 words, but use bullets to highlight key points.
     
     - name: Add Model Eval Summary to Job Summary
       id: output
       run: |
-        echo "Response saved to: ${{ steps.inference.outputs.response-file }}"
-        cat "${{ steps.inference.outputs.response }}" >> $GITHUB_STEP_SUMMARY
-
+        echo "${{ steps.inference.outputs.response }}" >> $GITHUB_STEP_SUMMARY
 
     # - name: Azure AI Agent Evaluation
     #   uses: microsoft/ai-agent-evals@v1-beta
