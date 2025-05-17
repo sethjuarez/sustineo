@@ -26,7 +26,11 @@ jobs:
       id: inference
       uses: actions/ai-inference@v1
       with:
-        prompt: "Analyze the criteria for evaluating the performance of AI agents in Azure AI Foundry. Provide a summary of the evaluation process and its importance. The eval data is in ./data/agent-evals.json. Keep the summary concise and focused on the key aspects of the evaluation." 
+        prompt: "Analyze the criteria for evaluating the performance of AI agents in Azure AI Foundry. Provide a summary of the evaluation process and its importance. The eval data is in ./data/agent-evals.json. Keep the summary concise and focused on the key aspects of the evaluation."
+    
+    - name: Add Model Eval Summary to Job Summary
+      id: output
+      run: echo "${{ steps.inference.outputs.response }}" >> $GITHUB_STEP_SUMMARY
 
 
     # - name: Azure AI Agent Evaluation
