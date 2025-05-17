@@ -46,7 +46,8 @@ jobs:
     
     - name: Add Model Eval Summary to Job Summary
       id: output
-      run: echo "${{ steps.inference.outputs.response }}" >> $GITHUB_STEP_SUMMARY
+      run: |
+        cat "${{ steps.inference.outputs.response-file }}" >> $GITHUB_STEP_SUMMARY
 
 
     # - name: Azure AI Agent Evaluation
