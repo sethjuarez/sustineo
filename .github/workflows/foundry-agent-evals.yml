@@ -39,7 +39,7 @@ jobs:
           Your summary should target someone who is not familiar with the topic.
         prompt: |
           Summarize the evaluation criteria used in Azure AI Foundry to assess AI agent performance, using the eval data from ${{ steps.store-eval-data.outputs.DATA_FILE }}.
-          Keep it under 200 words.
+          Keep it under 150 words.
           Use bullet points for clarity.
           Focus on what is evaluated and why it matters for AI development and deployment.
     
