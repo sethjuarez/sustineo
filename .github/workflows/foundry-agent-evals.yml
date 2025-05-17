@@ -15,12 +15,12 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-    # - name: Log in to Azure
-    #   uses: azure/login@v2
-    #   with:
-    #     client-id: ${{ secrets.AZURE_CLIENT_ID }}
-    #     tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-    #     subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+    - name: Log in to Azure
+      uses: azure/login@v2
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
     
     - name: store eval data
       id: store-eval-data
@@ -49,11 +49,11 @@ jobs:
         echo "## Azure AI Foundry: Agent Evaluation Overview" >> $GITHUB_STEP_SUMMARY
         echo "${{ steps.inference.outputs.response }}" >> $GITHUB_STEP_SUMMARY
 
-    # - name: Azure AI Agent Evaluation
-    #   uses: microsoft/ai-agent-evals@v1-beta
-    #   with:
-    #     deployment-name: "gpt-4o-mini"
-    #     azure-aiproject-connection-string: ${{ secrets.AZURE_AI_PROJECT_CONNECTION_STRING }}
-    #     agent-ids: ${{ secrets.AZURE_AI_AGENT_IDS }}
-    #     # evaluation-result-view: "all-scores"
-    #     data-path: "data/agent-evals.json"
+    - name: Azure AI Agent Evaluation
+      uses: microsoft/ai-agent-evals@v1-beta
+      with:
+        deployment-name: "gpt-4o-mini"
+        azure-aiproject-connection-string: ${{ secrets.AZURE_AI_PROJECT_CONNECTION_STRING }}
+        agent-ids: ${{ secrets.AZURE_AI_AGENT_IDS }}
+        # evaluation-result-view: "all-scores"
+        data-path: "data/agent-evals.json"
