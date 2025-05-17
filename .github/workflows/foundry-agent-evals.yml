@@ -6,6 +6,7 @@ on:
 permissions:
   id-token: write
   contents: read
+  models: read
 
 jobs:
   run-action:
@@ -14,19 +15,25 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-    - name: Log in to Azure
-      uses: azure/login@v2
+    # - name: Log in to Azure
+    #   uses: azure/login@v2
+    #   with:
+    #     client-id: ${{ secrets.AZURE_CLIENT_ID }}
+    #     tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+    #     subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+    
+    - name: GitHub Models Eval Summary
+      id: inference
+      uses: actions/ai-inference@v1
       with:
-        client-id: ${{ secrets.AZURE_CLIENT_ID }}
-        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        prompt: "Analyze the criteria for evaluating the performance of AI agents in Azure AI Foundry. Provide a summary of the evaluation process and its importance. The eval data is in ./data/agent-evals.json. Keep the summary concise and focused on the key aspects of the evaluation." 
 
 
-    - name: Azure AI Agent Evaluation
-      uses: microsoft/ai-agent-evals@v1-beta
-      with:
-        deployment-name: "gpt-4o-mini"
-        azure-aiproject-connection-string: ${{ secrets.AZURE_AI_PROJECT_CONNECTION_STRING }}
-        agent-ids: ${{ secrets.AZURE_AI_AGENT_IDS }}
-        # evaluation-result-view: "all-scores"
-        data-path: "data/agent-evals.json"
+    # - name: Azure AI Agent Evaluation
+    #   uses: microsoft/ai-agent-evals@v1-beta
+    #   with:
+    #     deployment-name: "gpt-4o-mini"
+    #     azure-aiproject-connection-string: ${{ secrets.AZURE_AI_PROJECT_CONNECTION_STRING }}
+    #     agent-ids: ${{ secrets.AZURE_AI_AGENT_IDS }}
+    #     # evaluation-result-view: "all-scores"
+    #     data-path: "data/agent-evals.json"
