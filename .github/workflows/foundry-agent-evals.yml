@@ -25,7 +25,6 @@ jobs:
     - name: store eval data
       id: store-eval-data
       run: |
-        // store the contents of data/agent-evals.json in a variable
         echo "eval_data_file=$(cat data/agent-evals.json)" >> $GITHUB_OUTPUT
 
     - name: GitHub Models Eval Summary
