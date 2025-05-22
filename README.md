@@ -81,6 +81,38 @@ The application follows these communication patterns:
 3. **WebSocket Communication** - Real-time communication between the frontend and backend
 4. **Agent Configuration** - The Voice Configuration component allows for dynamic selection of which agents to include as tools
 
+#### Agent Interaction Sequence
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant UI as Web UI
+    participant WS as WebSocket
+    participant VA as Voice Agent
+    participant AA as Additional Agents
+    
+    U->>UI: User Input
+    UI->>WS: Send Request
+    WS->>VA: Forward Request
+    VA->>VA: Process with Global Context
+    VA->>AA: Function Call (if needed)
+    AA->>VA: Return Result
+    VA->>WS: Stream Response
+    WS->>UI: Update UI
+    UI->>U: Display Result
+```
+
+#### Function Calling Mechanism
+
+The function calling mechanism allows agents to leverage each other's capabilities. When an agent needs functionality from another agent:
+
+1. It makes a function call with necessary parameters
+2. The call is routed to the appropriate agent
+3. The called agent executes the function and returns results
+4. Results are integrated back into the calling agent's context
+
+This mechanism enables complex multi-agent workflows while maintaining separation of concerns between agents.
+
 ### Component Descriptions
 
 - **Voice Agent**: Central agent with global context that orchestrates interactions with other agents
@@ -97,3 +129,19 @@ When an agent is executed:
 4. The Voice Agent can make calls to other agents as needed
 
 This architecture allows for flexible, extensible agent interactions while maintaining a central context through the Voice Agent.
+
+## Implementation Technologies
+
+Sustineo is built using the following technologies:
+
+### Backend
+- **FastAPI**: High-performance web framework for building APIs
+- **Azure AI Projects**: SDK for interacting with Azure AI Foundry agents
+- **Prompty**: Framework for loading and executing prompt-based agents
+- **WebSockets**: For real-time bidirectional communication
+
+### Frontend
+- **React**: JavaScript library for building user interfaces
+- **TypeScript**: Typed superset of JavaScript
+- **TanStack Query**: Data synchronization library for React
+- **Mermaid.js**: JavaScript-based diagramming and charting tool
