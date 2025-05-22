@@ -19,6 +19,17 @@ Sustineo supports three types of agents:
 
 The Voice Agent serves as the central orchestrator with global context, while other agents provide specialized services with more local contexts.
 
+### Agent Capabilities
+
+The system includes several specialized agents:
+
+1. **Voice Agent** - Central coordinator with global context that manages interactions with other agents
+2. **Researcher Agent** - Performs searches and provides structured information based on user queries
+3. **Image Generation Agent** - Creates images based on descriptive prompts using Azure OpenAI
+4. **Function Agents** - Execute specific tasks like saving files or processing data
+5. **Custom Prompty Agents** - Specialized agents defined in `.prompty` files for specific use cases
+6. **Azure AI Foundry Agents** - Cloud-hosted agents that provide additional capabilities
+
 ### System Components
 
 ```mermaid
@@ -38,9 +49,13 @@ graph TD
 
     subgraph "Agents"
         VA[Voice Agent - Global Context]
-        FA[Function Agents]
-        CA[Custom Agents]
-        FDA[Foundry Agents]
+        subgraph "Local Context Agents"
+            RA[Researcher Agent]
+            IGA[Image Generation Agent]
+            FA[Function Agents]
+            CA[Custom Agents]
+            FDA[Foundry Agents]
+        end
     end
 
     UI --> VC
@@ -49,6 +64,8 @@ graph TD
     API --> VH
     API --> AM
     AM --> VA
+    VA --> RA
+    VA --> IGA
     VA --> FA
     VA --> CA
     VA --> FDA
