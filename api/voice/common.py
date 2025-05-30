@@ -136,7 +136,10 @@ async def get_cosmos_container():
 @trace
 async def query_configurations() -> list[Configuration]:
     async with get_cosmos_container() as container:
-        items = container.read_all_items()
+        
+        query = "SELECT * FROM c"
+        items = container.query_items(query=query)
+
         configurations: list[Configuration] = []
         async for item in items:
             configurations.append(
