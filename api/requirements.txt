@@ -9,14 +9,13 @@ azure-monitor-opentelemetry-exporter
 opentelemetry-instrumentation-fastapi
 openai[realtime]
 azure-cosmos
-aiohttp
+aiohttp==3.11.18
 aiofiles
 types-aiofiles
 mypy
 azure-ai-projects==1.0.0b10
 azure-identity
 prompty[azure]==1.0.0a1
-aiohttp
 azure-storage-blob
 pytest>=7.0.0
 pytest-asyncio>=0.21.0
