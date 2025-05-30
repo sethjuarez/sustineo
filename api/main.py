@@ -203,4 +203,6 @@ async def voice_endpoint(id: str, websocket: WebSocket):
         print("Voice Socket Disconnected", e)
 
 
-FastAPIInstrumentor.instrument_app(app, exclude_spans=["send", "receive"])
+FastAPIInstrumentor.instrument_app(
+    app, exclude_spans=["send", "receive"], excluded_urls="health"
+)
