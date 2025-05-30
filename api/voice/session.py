@@ -84,6 +84,7 @@ class RealtimeSession:
         self.active = True
         self.thread_id = thread_id
 
+    @trace
     async def update_realtime_session(
         self,
         instructions: str,

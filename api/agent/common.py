@@ -140,6 +140,7 @@ async def execute_foundry_agent(
             await stream.until_done()
 
 
+@trace
 async def create_foundry_thread():
     async with get_foundry_project_client() as project_client:
         thread = await project_client.agents.create_thread()
