@@ -74,7 +74,7 @@ def init_tracing(local_tracing: bool = True):
         Tracer.add("OpenTelemetry", otel_genai_mapper.trace_span)
 
         azmon_logger = logging.getLogger("azure")
-        azmon_logger.setLevel(logging.INFO)
+        azmon_logger.setLevel(logging.DEBUG)
 
         # oteltrace.set_tracer_provider(TracerProvider())
 
