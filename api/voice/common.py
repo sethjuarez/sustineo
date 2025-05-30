@@ -23,6 +23,7 @@ DATABASE_NAME = "sustineo"
 CONTAINER_NAME = "VoiceConfigurations"
 
 
+@trace
 async def seed_configurations(container: ContainerProxy) -> list[Configuration]:
     configs = []
     # Load default configuration from file
@@ -133,6 +134,28 @@ async def get_cosmos_container():
 
 
 @trace
+async def query_configurations() -> list[Configuration]:
+    async with get_cosmos_container() as container:
+        items = container.read_all_items()
+        configurations: list[Configuration] = []
+        async for item in items:
+            configurations.append(
+                Configuration(
+                    id=item["id"],
+                    name=item["name"],
+                    default=item["default"] if "default" in item else False,
+                    content=item["content"],
+                    tools=item["tools"] if "tools" in item else [],
+                )
+            )
+
+        if len(configurations) == 0:
+            configurations = await seed_configurations(container)
+            
+    return configurations
+
+
+@trace
 async def get_default_configuration() -> Union[Configuration, None]:
     async with get_cosmos_container() as container:
         query = "SELECT * FROM c WHERE c.default = true"
@@ -162,6 +185,7 @@ def convert_function_params(params: list[dict]) -> dict:
         },
         "required": [p["name"] for p in params if p["required"]],
     }
+
 
 @trace
 async def get_default_configuration_data(**args) -> Union[DefaultConfiguration, None]:

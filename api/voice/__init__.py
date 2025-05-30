@@ -7,7 +7,7 @@ from api.model import Configuration
 from api.voice.common import (
     get_cosmos_container,
     load_prompty_config,
-    seed_configurations,
+    query_configurations,
 )
 
 
@@ -29,23 +29,7 @@ class Config(BaseModel):
 
 @router.get("/")
 async def get_configurations():
-    async with get_cosmos_container() as container:
-        items = container.read_all_items()
-        configurations: list[Configuration] = []
-        async for item in items:
-            configurations.append(
-                Configuration(
-                    id=item["id"],
-                    name=item["name"],
-                    default=item["default"] if "default" in item else False,
-                    content=item["content"],
-                    tools=item["tools"] if "tools" in item else [],
-                )
-            )
-
-        if len(configurations) == 0:
-            configurations = await seed_configurations(container)
-
+    configurations = await query_configurations()
     return configurations
 
 
