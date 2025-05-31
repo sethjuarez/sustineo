@@ -58,8 +58,11 @@ The dev container will automatically:
 ### 4. Access the Application
 Once setup completes:
 - **Web Frontend**: http://localhost:5173
-- **API Backend**: http://localhost:8000
+- **API Backend**: http://localhost:8000  
 - **API Documentation**: http://localhost:8000/docs
+- **API Debugger**: Port 5678 (for VS Code debugging)
+
+💡 **Tip**: The web application will automatically connect to the API backend running on port 8000. If you see connection errors, ensure both servers are running.
 
 ## 🔧 Manual Setup (Alternative)
 
@@ -241,6 +244,32 @@ And these secrets for environment variables:
 2. Test locally to ensure everything works
 3. Merge to `release` branch
 4. GitHub Actions will automatically build and deploy
+
+## 🧪 Testing Your Setup
+
+After completing the setup, you can verify everything is working correctly:
+
+### Test API Setup
+```bash
+# Activate virtual environment and run tests
+cd api
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+python -m pytest tests/test_agents_simple.py -v
+```
+
+### Test Web Setup
+```bash
+# Check TypeScript compilation
+cd web
+npm run typecheck
+```
+
+### Test Full Application
+1. Start both servers using `./scripts/start.sh`
+2. Open http://localhost:5173 in your browser
+3. Verify the web application loads without errors
+4. Check the browser console for any connection issues
+5. Visit http://localhost:8000/docs to explore the API
 
 ## 🛠️ Troubleshooting
 
