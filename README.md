@@ -11,43 +11,24 @@ These are the experts on the evently team where issues should be assigned to for
  - Build with LLMs locally to add my own Agentic Features to my BuildEvents app @martinwoodward
 
 ## Setting up your Dev Environment
-This project uses Visual Studio Code Dev Containers for a consistent development environment. The dev container comes pre-configured with:
-- Python3 and pip
-- Node.js and npm
-- Required VS Code extensions
-- All necessary development tools
-- Add the configuration for the GitHub MCP server and the Figma MCP server
-- You will need to create a GitHub token for the GitHub MCP as well as an API key for the Figma MCP Server *todo* - add instructions with links
 
-### Getting Started
+For comprehensive setup instructions including prerequisites, environment variables, deployment information, and troubleshooting, please see the **[SETUP.md](./SETUP.md)** guide.
+
+### Quick Start
+This project uses Visual Studio Code Dev Containers for the easiest setup experience:
+
 1. Install the [Remote Development](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack) extension pack in VS Code
-2. Clone this repository
-3. Open the project in VS Code
-4. When prompted, click "Reopen in Container" or run the "Remote-Containers: Reopen in Container" command
-5. The container will build and set up your development environment automatically, running the setup scripts and starting the services
-6. **Note** This project can also be run in GitHub Codespaces
+2. Clone this repository and open in VS Code  
+3. Click "Reopen in Container" when prompted
+4. The dev container will automatically set up everything and start the services
+5. Access the app at http://localhost:5173
 
-### Development Lifecycle
-The dev container automatically handles the complete setup and startup process for you:
-- When the container is built, it runs `./scripts/postCreate.sh` to initialize all dependencies
-- When the container starts, it runs `./scripts/start.sh` to launch all services
+### Manual Commands
+If you need to control the services manually:
 
-### Manual Commands (if needed)
-While the dev container handles these automatically, you can also run these commands manually if needed:
+- `./scripts/start.sh` - Start both development servers
+- `./scripts/stop.sh` - Stop all running services  
+- `python scripts/start_api.py` - Start only the API server (with debugger)
+- `cd web && npm run dev` - Start only the web server
 
-- `make setup` - Reinitialize the project:
-  - Creates Python virtual environment
-  - Installs Python dependencies
-  - Installs Node.js dependencies
-
-- `make start` - Start the development servers:
-  - Python API server (listens on port 8000 with debugger on port 5678)
-  - Node.js development server (listens on port 5173)
-  
-- `make stop` - Stop all running services and clean up processes
-
-These commands are useful if you need to reset your environment or restart services manually.
-
-### Additional Information
-- magic function calling mapping for generic local function calls (A)
-- figure out backchannel with utility function calls (A+S)*
+The API runs on port 8000 (debugger on 5678) and the web app on port 5173.
