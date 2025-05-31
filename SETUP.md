@@ -12,6 +12,17 @@ The project consists of two main components:
 - **API Backend**: FastAPI-based server providing voice processing, agent management, and real-time communication
 - **Web Frontend**: React-based user interface with real-time WebSocket communication
 
+### Key Features
+- **Voice Processing**: Azure OpenAI Realtime API integration for voice interactions
+- **AI Agent System**: Extensible agent framework with multiple agent types:
+  - Function agents (Python functions decorated with `@agent`)
+  - Prompty agents (AI agents defined in `.prompty` files) 
+  - Azure AI Foundry agents (cloud-based agents)
+  - Client agents (browser-side interactions)
+- **Real-time Communication**: WebSocket connections for live updates
+- **Azure Integration**: Storage, Cosmos DB, AI services
+- **Telemetry**: OpenTelemetry integration with Azure Monitor
+
 ## Prerequisites
 
 Before setting up the project, ensure you have the following installed:
@@ -122,9 +133,33 @@ APPINSIGHTS_CONNECTIONSTRING=your_appinsights_connection
 
 # Development Settings
 LOCAL_TRACING_ENABLED=true
+
+# MCP Server Configuration (Optional)
+# GitHub MCP Server - requires GitHub personal access token
+GITHUB_TOKEN=your_github_personal_access_token
+
+# Figma MCP Server - requires Figma API key
+FIGMA_API_KEY=your_figma_api_key
 ```
 
 > **Note**: For development, you can start with mock/test credentials, but full functionality requires valid Azure service credentials.
+
+### MCP Server Configuration (Optional)
+
+The project supports Model Context Protocol (MCP) servers for enhanced functionality:
+
+#### GitHub MCP Server
+- **Purpose**: Provides GitHub integration capabilities
+- **Setup**: Create a [GitHub Personal Access Token](https://github.com/settings/tokens)
+- **Permissions**: Repository access, read permissions for relevant repos
+- **Environment Variable**: `GITHUB_TOKEN`
+
+#### Figma MCP Server  
+- **Purpose**: Provides Figma integration for design workflows
+- **Setup**: Create a [Figma API key](https://www.figma.com/developers/api#access-tokens)
+- **Environment Variable**: `FIGMA_API_KEY`
+
+These MCP servers are optional and the application will work without them, but they enable additional AI agent capabilities.
 
 ## Running the Application
 
