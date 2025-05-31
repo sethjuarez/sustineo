@@ -1,5 +1,5 @@
 {
-	"name": "BuildEvents 2025",
+	"name": "Sustineo Development",
 	"image": "mcr.microsoft.com/devcontainers/typescript-node:1-22-bookworm",
 	"features": {
 		"ghcr.io/devcontainers/features/python:1": {},

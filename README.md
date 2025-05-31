@@ -1,14 +1,20 @@
-This is the website for Evently.
+# Sustineo
 
-## About BuildEvents by Contoso
-BuildEvents by Contoso is a website that allows people to capture ideas about events they go to and things that they enjoy, then add some agentic features to that website, support voice input and support them as they build their own event.
+Your personal AI assistant with voice processing and agentic capabilities.
+
+## About Sustineo
+Sustineo is an AI-powered personal assistant application that demonstrates modern agentic features including voice processing, real-time communication, and AI agent management. Built with Azure AI services, it showcases how to create intelligent applications with GitHub Copilot assistance.
 
 ## Roles and Responsibilities
-These are the experts on the evently team where issues should be assigned to for triaging
+These are the experts on the Sustineo team where issues should be assigned for triaging:
  - Showing how GitHub Copilot’s agentic feature can help speed up development: @jldeen
- - Migrating legacy Java code @jldeen
+ - Migrating legacy Java code: @jldeen
  - Show how to take advantage of the latest models @sethjuarez
- - Build with LLMs locally to add my own Agentic Features to my BuildEvents app @martinwoodward
+ - Build with LLMs locally to add Agentic Features to the Sustineo app: @martinwoodward
+
+## Quick Start
+
+For detailed setup instructions, see [SETUP.md](./SETUP.md).
 
 ## Setting up your Dev Environment
 This project uses Visual Studio Code Dev Containers for a consistent development environment. The dev container comes pre-configured with:
@@ -35,19 +41,37 @@ The dev container automatically handles the complete setup and startup process f
 ### Manual Commands (if needed)
 While the dev container handles these automatically, you can also run these commands manually if needed:
 
-- `make setup` - Reinitialize the project:
-  - Creates Python virtual environment
-  - Installs Python dependencies
-  - Installs Node.js dependencies
+**Setup Commands:**
+```bash
+# Initialize API backend
+cd api
+python3 -m venv .venv
+source .venv/bin/activate  # Linux/macOS
+pip install -r requirements.txt debugpy
 
-- `make start` - Start the development servers:
-  - Python API server (listens on port 8000 with debugger on port 5678)
-  - Node.js development server (listens on port 5173)
-  
-- `make stop` - Stop all running services and clean up processes
+# Initialize Web frontend  
+cd ../web
+npm install
+```
+
+**Development Commands:**
+```bash
+# Start API server (from project root)
+python ./scripts/start_api.py
+
+# Start Web server (from project root)
+cd web && npm run dev
+
+# Stop all services (from project root)
+./scripts/stop.sh
+```
 
 These commands are useful if you need to reset your environment or restart services manually.
 
 ### Additional Information
-- magic function calling mapping for generic local function calls (A)
-- figure out backchannel with utility function calls (A+S)*
+- Voice interaction capabilities with Azure OpenAI Realtime API
+- AI agent management and function calling
+- Real-time WebSocket communication
+- Azure service integrations for storage and AI processing
+
+For comprehensive setup instructions, environment variables, and deployment information, see [SETUP.md](./SETUP.md).
