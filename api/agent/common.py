@@ -79,34 +79,42 @@ async def get_foundry_project_client():
 
 async def get_foundry_agents() -> dict[str, Agent]:
     global foundry_agents
+    foundry_agents.clear()
     async with get_foundry_project_client() as project_client:
-        agents = await project_client.agents.list_agents()
-        foundry_agents = {
-            agent["name"]
-            .strip()
-            .replace(" ", "_")
-            .lower(): Agent(
-                id=agent["id"],
-                name=agent["name"],
-                type="foundry-agent",
-                description=agent["description"],
-                parameters=[
-                    {
-                        "name": "additional_instructions",
-                        "type": "string",
-                        "description": f"Additional instructions for the \"{agent['name']}\" agent. Provide additional instructions for the system message of the agent to fulfill the task with the following description: {agent['description']}",
-                        "required": True,
-                    },
-                    {
-                        "name": "query",
-                        "type": "string",
-                        "description": f"Query for the \"{agent['name']}\" agent. Provide enough context to fulfill the task with the following description: {agent['description']}. Provide the query to the agent as if you were talking to it.",
-                        "required": True,
-                    },
-                ],
-            )
-            for agent in agents.data
-        }
+        last_id: Union[str, None] = None
+        has_more = True
+
+        while has_more:
+            agents = await project_client.agents.list_agents(after=last_id)
+            last_id = agents.last_id
+            has_more = agents.has_more
+            for agent in agents.data:
+                last_id = agent["id"]
+                if (
+                    agent["description"] is not None
+                    and len(str(agent["description"]).strip()) > 0
+                ):
+                    name =  agent["name"].strip().replace(" ", "_").lower()
+                    foundry_agents[name] = Agent(
+                        id=agent["id"],
+                        name=agent["name"],
+                        type="foundry-agent",
+                        description=agent["description"],
+                        parameters=[
+                            {
+                                "name": "additional_instructions",
+                                "type": "string",
+                                "description": f"Additional instructions for the \"{agent['name']}\" agent. Provide additional instructions for the system message of the agent to fulfill the task with the following description: {agent['description']}",
+                                "required": True,
+                            },
+                            {
+                                "name": "query",
+                                "type": "string",
+                                "description": f"Query for the \"{agent['name']}\" agent. Provide enough context to fulfill the task with the following description: {agent['description']}. Provide the query to the agent as if you were talking to it.",
+                                "required": True,
+                            },
+                        ],
+                    )
 
         return foundry_agents
 
