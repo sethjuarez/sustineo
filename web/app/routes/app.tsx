@@ -9,6 +9,7 @@ import {
   TbAirBalloon,
   TbId,
 } from "react-icons/tb";
+import { RiVideoAiLine } from "react-icons/ri";
 import { VscClearAll } from "react-icons/vsc";
 import VoiceSettings from "components/voice/voicesettings";
 import Actions from "components/actions";
@@ -37,6 +38,7 @@ import {
   researchData,
   scenarioEffort,
   scenarioOutput,
+  videoData,
   writerData,
 } from "store/data";
 import VideoImagePicker from "components/videoimagepicker";
@@ -137,6 +139,27 @@ export default function Home() {
             image_url: item.image_url,
             size: item.size,
             quality: item.quality,
+          },
+          children: [],
+        });
+      } else if (item.type === "video") {
+        await sendRealtime({
+          id: uuidv4(),
+          type: "function_completion",
+          call_id: call_id,
+          output: `Generated video as described by ${item.description}. It is ${item.duration} seconds long. It has been saved and is currently being displayed to ${user.name}.`,
+        });
+
+        output?.addOutput(parent, agent, {
+          id: uuidv4(),
+          title: agent,
+          value: 1,
+          data: {
+            id: uuidv4(),
+            type: "video",
+            description: item.description,
+            video_url: item.video_url,
+            duration: item.duration,
           },
           children: [],
         });
@@ -398,6 +421,19 @@ export default function Home() {
                 title={"Add Image"}
               />
               <Tool
+                icon={<RiVideoAiLine size={18} title={"Add Video"} />}
+                onClick={() => {
+                  output?.addOutput("sora_video_generation", "Sora Video Generation", {
+                    id: uuidv4(),
+                    title: "Sora Video Generation",
+                    value: 1,
+                    data: videoData,
+                    children: [],
+                  });
+                }}
+                title={"Add Video"}
+              />
+              <Tool
                 icon={<TbArticle size={18} title={"Add Article"} />}
                 onClick={() => {
                   output?.addOutput(
@@ -460,10 +496,7 @@ export default function Home() {
         setShow={setShowCapture}
         setCurrentImage={setCurrentImage}
       />
-      <FileImagePicker
-        ref={filePickerRef}
-        setCurrentImage={setCurrentImage}
-      />
+      <FileImagePicker ref={filePickerRef} setCurrentImage={setCurrentImage} />
       {callState === "call" && (
         <div
           className={clsx(

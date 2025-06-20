@@ -68,11 +68,8 @@ jobs:
                                 "AZURE_IMAGE_ENDPOINT=secretref:azure-image-endpoint" \
                                 "AZURE_IMAGE_API_KEY=secretref:azure-image-api-key" \
                                 "SUSTINEO_STORAGE=secretref:sustineo-storage" \
-                                "TW_API_KEY=secretref:tw-api-key" \
-                                "TW_API_SECRET=secretref:tw-api-secret" \
-                                "TW_ACCESS_TOKEN=secretref:tw-access-token" \
-                                "TW_ACCESS_TOKEN_SECRET=secretref:tw-access-token-secret" \
-                                "TW_BEARER_TOKEN=secretref:tw-bearer-token" \
+                                "AZURE_SORA_ENDPOINT=secretref:azure-sora-endpoint" \
+                                "AZURE_SORA_API_KEY=secretref:azure-sora-api-key" \
                                 "LOCAL_TRACING_ENABLED=false"
 
       - name: Logout

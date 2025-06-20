@@ -90,8 +90,8 @@ const Output: React.FC<Props> = ({ data }: Props) => {
         <>
           <clipPath id={`clip-${id}`}>
             <rect
-              width={Math.max(d.x1 - d.x0, 1)}
-              height={Math.max(d.y1 - d.y0, 1)}
+              width={Math.max(width, 1)}
+              height={Math.max(height, 1)}
               rx={8}
               ry={8}
             />
@@ -104,6 +104,45 @@ const Output: React.FC<Props> = ({ data }: Props) => {
               height={max_size}
               href={url}
             />
+          </g>
+        </>
+      );
+    } else if (data.type === "video") {
+      const url = data.video_url.startsWith("http")
+        ? data.video_url
+        : `${API_ENDPOINT}/${data.video_url}`;
+      // Ensure the video fits within the dimensions
+      const videoWidth = Math.max(480, width);
+      const videoHeight = Math.max(480, height);
+      return (
+
+        <>
+          <clipPath id={`clip-${id}`}>
+            <rect
+              width={Math.max(width, 1)}
+              height={Math.max(height, 1)}
+              rx={8}
+              ry={8}
+            />
+          </clipPath>
+          <g clipPath={`url(#clip-${id})`}>
+            <foreignObject
+              x={0}
+              y={0}
+              width={width}
+              height={height}
+              clipPath={`clip-${id}`}
+            >
+              <video
+                width={videoWidth}
+                height={videoHeight}
+                autoPlay
+                loop
+                muted
+              >
+                <source src={url} type="video/mp4" />
+              </video>
+            </foreignObject>
           </g>
         </>
       );
@@ -175,7 +214,6 @@ const Output: React.FC<Props> = ({ data }: Props) => {
                             child.data.data
                           );
                         }
-                        console.log(d.data);
                       }}
                       className={styles.item}
                     >

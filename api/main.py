@@ -91,6 +91,22 @@ async def get_image(image_id: str):
         return Response(content=image_bytes, media_type="image/png")
 
 
+@app.get("/videos/{video_id}")
+async def get_video(video_id: str):
+    async with get_storage_client("sustineo") as container_client:
+        # get the blob client for the video
+        blob_client = container_client.get_blob_client(f"videos/{video_id}")
+
+        # check if the blob exists
+        if not await blob_client.exists():
+            return Response(status_code=404, content="Video not found")
+
+        # return bytes as mp4 video
+        video_data = await blob_client.download_blob()
+        video_bytes = await video_data.readall()
+        return Response(content=video_bytes, media_type="video/mp4")
+
+
 @app.websocket("/api/voice/{id}")
 async def voice_endpoint(id: str, websocket: WebSocket):
 

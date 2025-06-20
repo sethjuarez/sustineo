@@ -3,7 +3,6 @@ import styles from "./outputdisplay.module.scss";
 import React, { useEffect, useImperativeHandle } from "react";
 import { VscChromeClose } from "react-icons/vsc";
 import TextOutput from "./textoutput";
-import { image } from "d3";
 import { API_ENDPOINT } from "store/endpoint";
 
 export interface OuptutDisplayHandle {
@@ -78,6 +77,19 @@ const OutputDisplay = React.forwardRef<OuptutDisplayHandle, {}>((_, ref) => {
             />
           );
         }
+      case "video":
+        return (
+          <video
+            controls
+            style={{ width: "100%", height: "100%" }}
+            autoPlay
+            loop
+            muted
+            src={`${API_ENDPOINT}/${data.video_url}`}
+          >
+            Your browser does not support the video tag.
+          </video>
+        );
 
       default:
         return <></>;

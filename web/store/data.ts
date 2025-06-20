@@ -1,5 +1,5 @@
 import { WEB_ENDPOINT } from "./endpoint";
-import type { TextData, ImageData, OutputNode } from "./output";
+import type { TextData, ImageData, OutputNode, VideoData } from "./output";
 import type { Update } from "./voice/voice-client";
 
 
@@ -198,6 +198,15 @@ export const imageData: ImageData =
   "image_url": `${WEB_ENDPOINT}/images/91b5e986-892e-4e09-920b-ec4c39d1dbbb.png`,
   "size": "1024x1024",
   "quality": "medium"
+};
+
+
+export const videoData: VideoData = {
+  "id": "d3f7187d-f43d-44cf-9501-7c42b51c9182",
+  "type": "video",
+  "description": "old vintage film of a cat reading a very interesting book",
+  "video_url": `${WEB_ENDPOINT}/videos/69d90b35-6161-42be-ad51-71141f5559af.mp4`,
+  "duration": 10,
 };
 
 

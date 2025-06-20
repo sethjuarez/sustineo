@@ -1,3 +1,4 @@
+import asyncio
 import os
 import io
 import base64
@@ -7,12 +8,14 @@ from typing import Annotated
 import aiohttp
 from api.agent.decorators import agent
 from api.model import AgentUpdateEvent, Content
-from api.agent.storage import save_image_blobs
+from api.agent.storage import save_image_blobs, save_video_blob
 from api.agent.common import execute_foundry_agent, post_request
 
 
 AZURE_IMAGE_ENDPOINT = os.environ.get("AZURE_IMAGE_ENDPOINT", "EMPTY").rstrip("/")
 AZURE_IMAGE_API_KEY = os.environ.get("AZURE_IMAGE_API_KEY", "EMPTY")
+AZURE_SORA_ENDPOINT = os.environ.get("AZURE_SORA_ENDPOINT", "EMPTY").rstrip("/")
+AZURE_SORA_API_KEY = os.environ.get("AZURE_SORA_API_KEY", "EMPTY")
 
 
 @agent(
@@ -174,7 +177,7 @@ async def gpt_image_edit(
     # send image as multipart/form-data
     if image.startswith("data:image/jpeg;base64,"):
         image = image.replace("data:image/jpeg;base64,", "")
-        
+
     form_data = aiohttp.FormData()
     img = io.BytesIO(base64.b64decode(image))
     form_data.add_field("image", img, filename="image.jpg", content_type="image/jpeg")
@@ -247,6 +250,153 @@ async def gpt_image_edit(
         )
 
         return images
+
+
+@agent(
+    name="Sora Video Generation Agent",
+    description="This agent can generate a video based on a detailed description. It is capable of generating videos in various styles and formats. The agent can also generate videos with different levels of detail and complexity.",
+)
+async def sora_video_generation(
+    description: Annotated[
+        str,
+        "The detailed description of the video to be generated. The more detailed the description, the better the video will be. Make sure to include the style of the video, the colors, and any other details that will help the model generate a better video.",
+    ],
+    seconds: Annotated[
+        int,
+        "Duration of the video in seconds. The video can be between 1 and 20 seconds long. If unclear, consult the user or choose 10.",
+    ],
+    notify: AgentUpdateEvent,
+) -> list[str]:
+    await notify(
+        id="sora_video_generation",
+        status="run in_progress",
+        information="Starting video generation",
+    )
+
+    await notify(
+        id="sora_video_generation",
+        status="step in_progress",
+        information="Executing Model",
+    )
+
+    api_version = "preview"
+    create_url = f"{AZURE_SORA_ENDPOINT}/openai/v1/video/generations/jobs?api-version={api_version}"
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {AZURE_SORA_API_KEY}",
+    }
+    body = {
+        "prompt": description,
+        "width": 480,
+        "height": 480,
+        "n_seconds": seconds,
+        "n_variants": 1,
+        "model": "sora",
+    }
+
+    async with aiohttp.ClientSession() as session:
+        async with session.post(create_url, headers=headers, json=body) as response:
+            if response.status != 201:
+                error_response = await response.json()
+                print(error_response)
+                await notify(
+                    id="sora_video_generation",
+                    status="step failed",
+                    information=error_response.get("detail", "Unknown error"),
+                )
+                return []
+
+            response_data = await response.json()
+            job_id = response_data["id"]
+
+            await notify(
+                id="sora_video_generation",
+                status="step_in_progress",
+                information=f"Video generation job created: {job_id}",
+            )
+
+            status_url = f"{AZURE_SORA_ENDPOINT}/openai/v1/video/generations/jobs/{job_id}?api-version={api_version}"
+            status = "started"
+            status_data: dict = {}
+            while status not in ("succeeded", "failed", "cancelled"):
+                # async sleep to avoid hitting the API too frequently
+                await asyncio.sleep(5)
+
+                async with session.get(status_url, headers=headers) as status_response:
+                    if status_response.status != 200:
+                        error_response = await status_response.json()
+                        print(error_response)
+                        await notify(
+                            id="sora_video_generation",
+                            status="step failed",
+                            information=error_response.get("error", "Unknown error"),
+                        )
+                        return []
+
+                    status_data = await status_response.json()
+                    if status != status_data["status"]:
+                        await notify(
+                            id="sora_video_generation",
+                            status="step in_progress",
+                            information=f'job status: {status_data["status"]}',
+                        )
+
+                    status = status_data["status"]
+
+            if status == "succeeded":
+                generations = status_data.get("generations", [])
+                if generations:
+                    generation_id = generations[0].get("id")
+                    video_url = f"{AZURE_SORA_ENDPOINT}/openai/v1/video/generations/{generation_id}/content/video?api-version={api_version}"
+                    async with session.get(
+                        video_url, headers=headers
+                    ) as video_response:
+                        if video_response.status != 200:
+                            error_response = await video_response.json()
+                            print(error_response)
+                            await notify(
+                                id="video_generation",
+                                status="step failed",
+                                information=error_response.get(
+                                    "error", "Unknown error"
+                                ),
+                            )
+                            return []
+
+                        await notify(
+                            id="sora_video_generation",
+                            status="step in_progress",
+                            information="Moving video to storage",
+                        )
+
+                        # Save the video content
+                        video_blob = await save_video_blob(video_response.content)
+
+                        await notify(
+                            id="sora_video_generation",
+                            status="step completed",
+                            content=Content(
+                                type="video",
+                                content=[
+                                    {
+                                        "type": "video",
+                                        "description": description,
+                                        "video_url": video_blob,
+                                        "duration": seconds,
+                                    }
+                                ],
+                            ),
+                            output=True,
+                        )
+        await notify(
+            id="sora_video_generation",
+            status="run completed",
+            information="Video generation complete",
+        )
+
+        return [""]
+
+    return []
 
 
 @agent(

@@ -185,3 +185,17 @@ async def post_request(
             else:
                 response_data = await response.json()
                 yield response_data
+
+
+@contextlib.asynccontextmanager
+async def get_request(
+    url: str, **kwargs: Unpack[_RequestOptions]
+) -> AsyncGenerator[dict[str, Any], None]:
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url, **kwargs) as response:
+            if response.status != 200:
+                state = await response.json()
+                yield state
+            else:
+                response_data = await response.json()
+                yield response_data

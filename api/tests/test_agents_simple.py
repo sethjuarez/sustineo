@@ -10,7 +10,12 @@ import base64
 
 from pathlib import Path
 
-from api.agent.agents import gpt_image_edit, gpt_image_generation, publish_linkedin_post
+from api.agent.agents import (
+    gpt_image_edit,
+    gpt_image_generation,
+    publish_linkedin_post,
+    sora_video_generation,
+)
 from api.model import Content
 
 
@@ -131,9 +136,20 @@ class TestAgentFunctions:
         assert edited_images
         assert isinstance(edited_images, list)
         assert len(edited_images) > 0
-        assert isinstance(edited_images[0], str) 
-        print(f"Edited image URL: {edited_images[0]}")  # Assuming edited images are returned as URLs or paths
+        assert isinstance(edited_images[0], str)
+        print(
+            f"Edited image URL: {edited_images[0]}"
+        )  # Assuming edited images are returned as URLs or paths
 
+    @pytest.mark.asyncio
+    async def test_video_generate(self, mock_notify):
+        """Test basic image editing functionality."""
+        description = "old vintage film of a cat reading a very interesting book"
+        video = await sora_video_generation(
+            description=description, seconds=10, notify=mock_notify
+        )
+
+        print(f"Generated video URL: {video}")
 
 
 if __name__ == "__main__":

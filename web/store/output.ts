@@ -50,8 +50,17 @@ export interface ImageData {
   quality: string;
 }
 
+export interface VideoData {
+  id: string;
+  type: "video";
+  description: string;
+  video_url: string;
+  duration: number; // in seconds
+  thumbnail_url?: string; // optional thumbnail for the video
+}
 
-export type Data = TextData | ImageData
+
+export type Data = TextData | ImageData | VideoData
 
 export interface OutputNode {
   id: string;
