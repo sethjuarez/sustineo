@@ -18,11 +18,14 @@ from api.voice.session import RealtimeSession
 from api.voice import router as voice_configuration_router
 from api.agent import router as agent_router
 from api.agent.common import get_custom_agents, create_foundry_thread
+# sub applications to mount
+from api.tools import tool_collection
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 
-from dotenv import load_dotenv
 
+from dotenv import load_dotenv
 load_dotenv()
+
 
 AZURE_VOICE_ENDPOINT = os.getenv("AZURE_VOICE_ENDPOINT") or ""
 AZURE_VOICE_KEY = os.getenv("AZURE_VOICE_KEY", "fake_key")
@@ -57,6 +60,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+for tool in tool_collection:
+    mount = f"/tools/{tool.name}"
+    app.mount(mount, tool.app)
 
 
 class SimpleMessage(BaseModel):
