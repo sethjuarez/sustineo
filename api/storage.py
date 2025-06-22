@@ -35,20 +35,41 @@ async def get_storage_client(container: str):
         await blob_service_client.close()
 
 
-async def save_image_blobs(images: list[str]) -> AsyncGenerator[str, None]:
+async def save_image_blobs(
+    images: list[str], path: str | None = None
+) -> AsyncGenerator[str, None]:
     async with get_storage_client(SUSTINEO_CONTAINER) as container_client:
         for image in images:
             image_bytes = base64.b64decode(image)
-            blob_name = f"images/{str(uuid.uuid4())}.png"
+            blob_name = (
+                f"images/{str(uuid.uuid4())}.png"
+                if path is None
+                else f"images/{path}/{str(uuid.uuid4())}.png"
+            )
             await container_client.upload_blob(
                 name=blob_name, data=image_bytes, overwrite=True
             )
             yield blob_name
 
-
-async def save_video_blob(stream_reader: StreamReader) -> str:
+async def save_image_blob(image: str, path: str | None = None) -> str:
     async with get_storage_client(SUSTINEO_CONTAINER) as container_client:
-        blob_name = f"videos/{str(uuid.uuid4())}.mp4"
+        image_bytes = base64.b64decode(image)
+        blob_name = (
+            f"images/{str(uuid.uuid4())}.png"
+            if path is None
+            else f"images/{path}/{str(uuid.uuid4())}.png"
+        )
+        await container_client.upload_blob(name=blob_name, data=image_bytes, overwrite=True)
+        return blob_name
+
+
+async def save_video_blob(stream_reader: StreamReader, path: str | None = None) -> str:
+    async with get_storage_client(SUSTINEO_CONTAINER) as container_client:
+        blob_name = (
+            f"videos/{str(uuid.uuid4())}.mp4"
+            if path is None
+            else f"videos/{path}/{str(uuid.uuid4())}.mp4"
+        )
         content = await stream_reader.read()
         await container_client.upload_blob(name=blob_name, data=content, overwrite=True)
         return blob_name
