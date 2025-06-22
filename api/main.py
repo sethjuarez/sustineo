@@ -9,7 +9,7 @@ from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, Response, WebSocket, WebSocketDisconnect
 
-from api.agent.storage import get_storage_client
+from api.storage import get_storage_client
 from api.connection import connections
 from api.model import Update
 from api.telemetry import init_tracing
@@ -82,7 +82,7 @@ async def root():
     return {"message": "Hello World"}
 
 
-@app.get("/images/{image_id}")
+@app.get("/images/{image_id:path}")
 async def get_image(image_id: str):
     async with get_storage_client("sustineo") as container_client:
         # get the blob client for the image
@@ -98,7 +98,7 @@ async def get_image(image_id: str):
         return Response(content=image_bytes, media_type="image/png")
 
 
-@app.get("/videos/{video_id}")
+@app.get("/videos/{video_id:path}")
 async def get_video(video_id: str):
     async with get_storage_client("sustineo") as container_client:
         # get the blob client for the video

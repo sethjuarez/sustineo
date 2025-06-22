@@ -8,7 +8,7 @@ from typing import Annotated
 import aiohttp
 from api.agent.decorators import agent
 from api.model import AgentUpdateEvent, Content
-from api.agent.storage import save_image_blobs, save_video_blob
+from api.storage import save_image_blobs, save_video_blob
 from api.agent.common import execute_foundry_agent, post_request
 
 
