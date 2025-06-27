@@ -45,7 +45,12 @@ const Setting: React.FC<Props> = ({ id, icon, children, className }: Props) => {
 
   return (
     <div id={id} className={styles.settings}>
-      {isOpen && <div className={clsx(styles.content, className)}>{children}</div>}
+      {isOpen && (
+        <>
+          <div className={styles.cover} onClick={() => setIsOpen(false)}></div>
+          <div className={clsx(styles.content, className)}>{children}</div>
+        </>
+      )}
       <Tool icon={icon} onClick={toggleOpen} />
     </div>
   );

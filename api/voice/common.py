@@ -1,7 +1,5 @@
-import os
 import prompty
 import aiofiles
-import contextlib
 from pathlib import Path
 from typing import Union
 from datetime import datetime
@@ -11,14 +9,13 @@ from prompty.core import Prompty
 from prompty import _load_with_slots
 from prompty.tracer import trace
 
-from azure.cosmos import PartitionKey
-from azure.cosmos.aio import CosmosClient, ContainerProxy
+from azure.cosmos.aio import ContainerProxy
 
 from openai.types.beta.realtime.session_update_event import SessionTool
+from api.cosmos import get_cosmos_container
 from api.model import Configuration, DefaultConfiguration
 
 
-COSMOSDB_CONNECTION = os.getenv("COSMOSDB_CONNECTION", "fake_connection")
 DATABASE_NAME = "sustineo"
 CONTAINER_NAME = "VoiceConfigurations"
 
@@ -116,25 +113,9 @@ async def load_prompty_file(
         return config
 
 
-@contextlib.asynccontextmanager
-async def get_cosmos_container():
-    # Create a Cosmos DB client
-    client = CosmosClient.from_connection_string(COSMOSDB_CONNECTION)
-    database = await client.create_database_if_not_exists(DATABASE_NAME)
-    container = await database.create_container_if_not_exists(
-        id=CONTAINER_NAME,
-        partition_key=PartitionKey(path="/id"),
-        offer_throughput=400,
-    )
-    try:
-        yield container
-    finally:
-        await client.close()
-
-
 @trace
 async def get_default_configuration() -> Union[Configuration, None]:
-    async with get_cosmos_container() as container:
+    async with get_cosmos_container(DATABASE_NAME, CONTAINER_NAME) as container:
         query = "SELECT * FROM c WHERE c.default = true"
         items = container.query_items(query=query)
         async for item in items:
@@ -162,6 +143,7 @@ def convert_function_params(params: list[dict]) -> dict:
         },
         "required": [p["name"] for p in params if p["required"]],
     }
+
 
 @trace
 async def get_default_configuration_data(**args) -> Union[DefaultConfiguration, None]:

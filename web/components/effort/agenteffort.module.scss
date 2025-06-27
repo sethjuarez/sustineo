@@ -4,7 +4,7 @@
 .agent {
   font-weight: 200;
   font-size: 1rem;
-  color: $color-zinc-300;
+  color: $color-neutral-300;
 }
 
 .title {
@@ -15,7 +15,7 @@
   justify-items: center;
   font-size: 0.75rem;
   margin-right: 0.75rem;
-  color: color.change($color-zinc-100, $alpha: 0.5);
+  color: color.change($color-neutral-100, $alpha: 0.5);
   user-select: none;
   cursor: pointer;
 }
@@ -23,7 +23,7 @@
 .status {
   font-weight: 400;
   font-size: 0.75rem;
-  color: color.change($color-zinc-100, $alpha: 0.5);
+  color: color.change($color-neutral-100, $alpha: 0.5);
   display: flex;
   flex-direction: row;
   gap: 0.3rem;
@@ -36,10 +36,10 @@
 }
 
 .agentName {
-  color: color.change($color-orange-300, $alpha: 0.75);
+  color: color.change($color-accent-orange-text, $alpha: 0.75);
 }
 
 .tool {
-  color: color.change($color-orange-300, $alpha: 0.75);
+  color: color.change($color-accent-orange-text, $alpha: 0.75);
   font-size: 0.75rem;
 }

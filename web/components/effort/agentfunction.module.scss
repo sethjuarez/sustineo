@@ -3,20 +3,20 @@
 .function {
   font-weight: 200;
   font-size: 1rem;
-  color: $color-zinc-300;
+  color: $color-neutral-300;
   margin-top: 10px;
   margin-bottom: 10px;
 }
 
 .functionCall {
   font-weight: 400;
-  color: $color-zinc-200;
+  color: $color-neutral-200;
   font-size: 0.85rem;
 }
 
 .functionName {
   font-weight: 400;
-  color: $color-orange-300;
+  color: $color-accent-orange-text;
 }
 
 .functionArgs {
@@ -33,13 +33,13 @@
 
 .functionArgKey {
   font-weight: 400;
-  color: $color-zinc-200;
+  color: $color-neutral-200;
   font-size: 0.75rem;
 }
 
 .functionArgValue {
   font-weight: 400;
-  color: $color-zinc-200;
+  color: $color-neutral-200;
   font-size: 0.75rem;
   user-select: none;
   cursor: pointer;

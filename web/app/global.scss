@@ -6,8 +6,8 @@ html {
 }
 
 body {
-  background-color: $color-zinc-50;
-  color: $color-zinc-900;
+  background-color: $color-background-primary;
+  color: $color-text-primary;
   font-family: $font-family-sans;
   min-height: 100vh;
   border: 0;
@@ -16,7 +16,7 @@ body {
 }
 
 a {
-  color: $color-zinc-900;
+  color: $color-text-primary;
   text-decoration: none;
 }
 
@@ -44,35 +44,35 @@ p {
   border-radius: 0.375rem;
   border-width: 0px;
   border-style: solid;
-  outline: 2px solid $color-zinc-300;
+  outline: 2px solid $color-border-default;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: $color-zinc-200;
+  background-color: $color-background-button;
   cursor: pointer;
   user-select: none;
 }
 
 .button:hover {
-  outline: 2px solid $color-sky-600;
-  background-color: $color-sky-200;
+  outline: 2px solid $color-border-focus;
+  background-color: $color-background-button-hover;
 }
 
 .buttonIcon {
   width: 24px;
   height: 24px;
-  stroke: $color-sky-800;
+  stroke: $color-icon-primary;
 }
 
 .buttonIcon:hover {
-  stroke: $color-sky-600;
+  stroke: $color-icon-secondary;
 }
 
 
 code {
   width: 300px;
   height: 200px;
-  background: #f0f0f0;
+  background: $color-code-background;
   overflow: auto;
 }
 

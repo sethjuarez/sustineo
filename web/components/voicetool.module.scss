@@ -10,9 +10,9 @@
 }
 
 .button {
-  background-color: $color-zinc-50;
-  color: $color-zinc-800;
-  border: solid 8px $color-zinc-300;
+  background-color: $color-background-primary;
+  color: $color-text-secondary;
+  border: solid 8px $color-border-default;
   border-radius: 50%;
   width: 6rem;
   height: 6rem;
@@ -27,8 +27,8 @@
   bottom: 56px;
 
   &:hover {
-    background-color: $color-zinc-300;
-    border-color: $color-zinc-600;
+    background-color: $color-background-button;
+    border-color: $color-border-active;
   }
 }
 
@@ -43,9 +43,9 @@
 }
 
 .idle {
-  background-color: $color-zinc-50;
-  color: $color-zinc-800;
-  border: solid 8px $color-zinc-300;
+  background-color: $color-background-primary;
+  color: $color-text-secondary;
+  border: solid 8px $color-border-default;
   border-radius: 50%;
   width: 6rem;
   height: 6rem;
@@ -60,29 +60,29 @@
   bottom: 56px;
 
   &:hover {
-    background-color: $color-zinc-300;
-    border-color: $color-zinc-600;
+    background-color: $color-background-button;
+    border-color: $color-border-active;
   }
 }
 
 @keyframes blink {
   0% {
-    fill: $color-zinc-800;
+    fill: $color-text-secondary;
   }
 
   50% {
-    fill: $color-zinc-600;
+    fill: $color-border-active;
   }
 
   100% {
-    fill: $color-zinc-800;
+    fill: $color-text-secondary;
   }
 }
 
 .call {
-  background-color: $color-orange-200;
-  color: $color-zinc-800;
-  border: solid 8px $color-zinc-50;
+  background-color: $color-background-accent;
+  color: $color-text-secondary;
+  border: solid 8px $color-background-primary;
   border-radius: 50%;
   width: 6rem;
   height: 6rem;
@@ -99,13 +99,13 @@
 
   & svg {
    
-    fill: $color-zinc-50;
+    fill: $color-background-primary;
     animation: blink 2s linear infinite;
   }
 
 
   &:hover {
-    background-color: $color-zinc-300;
-    border-color: $color-zinc-50;
+    background-color: $color-background-button;
+    border-color: $color-background-primary;
   }
 }

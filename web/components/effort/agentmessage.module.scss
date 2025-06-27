@@ -3,9 +3,9 @@
 
 
 .message {
-  border: solid 1px color.change($color-zinc-100, $alpha: 0.2);
+  border: solid 1px color.change($color-neutral-100, $alpha: 0.2);
   border-radius: 10px;
-  color: $color-zinc-100;
+  color: $color-neutral-100;
   padding: 10px;
   font-size: 1rem;
 
@@ -19,7 +19,7 @@
   ol,
   ul,
   li {
-    color: $color-zinc-100;
+    color: $color-neutral-100;
     font-family: $font-family-sans;
     font-weight: 300;
     line-height: 1.25;
@@ -37,7 +37,7 @@
 
   & strong {
     font-weight: 400;
-    color: $color-orange-300;
+    color: $color-accent-orange-text;
   }
 
   & h1,

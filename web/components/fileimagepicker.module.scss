@@ -14,16 +14,16 @@
 }
 
 .fileGetButton:hover {
-  outline: 2px solid $color-sky-600;
-  background-color: $color-sky-200;
+  outline: 2px solid $color-border-focus;
+  background-color: $color-background-button-hover;
 }
 
 .fileGetButtonIcon {
   width: 24px;
   height: 24px;
-  stroke: $color-sky-800;
+  stroke: $color-icon-primary;
 }
 
 .fileGetButtonIcon:hover {
-  stroke: $color-sky-600;
+  stroke: $color-icon-secondary;
 }
