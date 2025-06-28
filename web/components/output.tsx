@@ -112,10 +112,10 @@ const Output: React.FC<Props> = ({ data }: Props) => {
         ? data.video_url
         : `${API_ENDPOINT}/${data.video_url}`;
       // Ensure the video fits within the dimensions
-      const videoWidth = Math.max(480, width);
-      const videoHeight = Math.max(480, height);
+      const size = Math.min(width, height) - 20;
+      const newX = (width - size) / 2;
+      const newY = (height - size) / 2;
       return (
-
         <>
           <clipPath id={`clip-${id}`}>
             <rect
@@ -126,20 +126,22 @@ const Output: React.FC<Props> = ({ data }: Props) => {
             />
           </clipPath>
           <g clipPath={`url(#clip-${id})`}>
+            <rect
+              width={Math.max(width, 1)}
+              height={Math.max(height, 1)}
+              rx={8}
+              ry={8}
+              fill={"#000000"}
+              opacity={0.25}
+            />
             <foreignObject
-              x={0}
-              y={0}
+              x={newX}
+              y={newY}
               width={width}
               height={height}
               clipPath={`clip-${id}`}
             >
-              <video
-                width={videoWidth}
-                height={videoHeight}
-                autoPlay
-                loop
-                muted
-              >
+              <video width={size} height={size} autoPlay loop muted>
                 <source src={url} type="video/mp4" />
               </video>
             </foreignObject>

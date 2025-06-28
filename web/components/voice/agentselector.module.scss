@@ -6,7 +6,7 @@
   gap: 0.5rem;
   padding: 1rem;
   border-radius: 0.375rem;
-  border: solid 1px $color-zinc-300;
+  border: solid 1px $color-neutral-300;
   background-color: $color-white;
   height: calc(80vh - 55px);
   overflow-y: scroll;
@@ -15,7 +15,7 @@
 
 .label {
   margin-left: 0.5rem;
-  color: $color-zinc-800;
+  color: $color-neutral-800;
   user-select: none;
   cursor: pointer;
 }

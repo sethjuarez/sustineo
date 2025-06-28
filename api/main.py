@@ -9,6 +9,7 @@ from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, Response, WebSocket, WebSocketDisconnect
 
+from api.cosmos import get_cosmos_container
 from api.storage import get_storage_client
 from api.connection import connections
 from api.model import Update
@@ -17,13 +18,16 @@ from api.voice.common import get_default_configuration_data
 from api.voice.session import RealtimeSession
 from api.voice import router as voice_configuration_router
 from api.agent import router as agent_router
+from api.design import router as design_router
 from api.agent.common import get_custom_agents, create_foundry_thread
+
 # sub applications to mount
 from api.tools import tool_collection
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 
 
 from dotenv import load_dotenv
+
 load_dotenv()
 
 
@@ -52,6 +56,7 @@ app = FastAPI(lifespan=lifespan, redirect_slashes=False)
 
 app.include_router(voice_configuration_router, tags=["voice"])
 app.include_router(agent_router, tags=["agents"])
+app.include_router(design_router, tags=["design"])
 
 app.add_middleware(
     CORSMiddleware,
@@ -75,6 +80,31 @@ class SimpleMessage(BaseModel):
 async def health(response: Response):
     response.status_code = 200
     return {"status": "ok"}
+
+
+@app.get("/setup")
+async def setup(response: Response):
+    async with get_cosmos_container(
+        database_name="sustineo", container_name="VoiceConfigurations"
+    ) as container:
+        # Check if the container exists
+        if not container:
+            response.status_code = 500
+            return {"error": "Container not found or could not be created."}
+
+    async with get_cosmos_container(
+        database_name="sustineo", container_name="DesignConfigurations"
+    ) as design_container:
+        # Check if the design container exists
+        if not design_container:
+            response.status_code = 500
+            return {"error": "Design container not found or could not be created."}
+
+    return {
+        "message": "Setup completed successfully.",
+        "voice_container": "VoiceConfigurations",
+        "design_container": "DesignConfigurations",
+    }
 
 
 @app.get("/")

@@ -1,9 +1,9 @@
 @use "../app/defaults.scss" as *;
 
 .button {
-  background-color: $color-zinc-50;
-  color: $color-zinc-800;
-  border: solid 3px $color-zinc-100;
+  background-color: $color-background-primary;
+  color: $color-text-secondary;
+  border: solid 3px $color-text-light;
   border-radius: 50%;
   width: 32px;
   height: 32px;
@@ -16,6 +16,6 @@
 }
 
 .button:hover {
-  background-color: $color-zinc-300;
-  border-color: $color-zinc-600;
+  background-color: $color-background-button;
+  border-color: $color-border-active;
 }
