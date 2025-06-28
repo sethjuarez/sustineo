@@ -1,4 +1,4 @@
-import type { Route } from "./+types/home";
+import type { Route } from "./+types/app";
 import Settings from "components/settings";
 import Setting from "components/setting";
 import {
@@ -102,7 +102,7 @@ export function meta({ data }: Route.MetaArgs) {
   return [{ title: title }, { name: "description", content: description }];
 }
 
-export default function Home({ loaderData }: Route.ComponentProps) {
+export default function App({ loaderData }: Route.ComponentProps) {
   const { background, logo, title, sub_title, description } = loaderData as unknown as Design;
 
 
