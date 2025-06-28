@@ -5,6 +5,12 @@
   flex-direction: column;
   height: 100%;
   width: 100%;
+  background-image: url('/images/background.jpg');
+  background-color: $color-background-overlay;
+  background-position: top left;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-blend-mode: darken;
 }
 
 .root {
@@ -23,12 +29,6 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-image: url('/images/background.jpg');
-    background-color: $color-background-overlay;
-    background-position: top left;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-blend-mode: darken;
     z-index: -1;
   }
 }
