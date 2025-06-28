@@ -53,6 +53,7 @@ import clsx from "clsx";
 import { BsMicMute, BsMic } from "react-icons/bs";
 import { fetchCachedImage } from "store/images";
 import DesignSettings from "components/designsettings";
+import { DesignConfiguration, type Design } from "store/design";
 
 const queryClient = new QueryClient();
 
@@ -64,14 +65,47 @@ interface ImageFunctionCall {
   image?: string;
 }
 
-export function meta({}: Route.MetaArgs) {
-  return [
-    { title: "BuildEvents by Contoso" },
-    { name: "description", content: "Making Things Happen since 1935" },
-  ];
+export async function loader({ params }: Route.LoaderArgs) {
+  const designConfig = new DesignConfiguration();
+  try {
+    const defaultDesign = await designConfig.fetchDefaultDesign();
+    return defaultDesign;
+  } catch (error) {
+    console.error("Error fetching default design:", error);
+  }
+  // You can perform any data fetching or initialization here
+  // For example, you might want to fetch user data or initial settings
+  const design: Design = {
+    id: "default",
+    background: "/images/background.jpg",
+    default: true,
+    logo: "",
+    title: "BuildEvents",
+    sub_title: "by Contoso",
+    description: "Making Things Happen since 1935",
+  };
+
+  return design;
 }
 
-export default function Home() {
+export function meta({ data }: Route.MetaArgs) {
+  if (!data) {
+    return [
+      { title: "BuildEvents by Contoso" },
+      { name: "description", content: "Making Things Happen since 1935" },
+    ];
+  }
+  const title = `${data["title"] || "BuildEvents"} ${
+    data["sub_title"] || "by Contoso"
+  }`;
+  const description = data["description"] || "Making Things Happen since 1935";
+  return [{ title: title }, { name: "description", content: description }];
+}
+
+export default function Home({ loaderData }: Route.ComponentProps) {
+  const { background, logo, title, sub_title, description } = loaderData as unknown as Design;
+
+
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const flags =
@@ -330,11 +364,12 @@ export default function Home() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <main className={styles.home}>
+      <main className={styles.home} style={{ backgroundImage: `url(${background})` }}>
         <Title
-          text="BuildEvents"
-          subtitle="by Contoso"
+          text={title}
+          subtitle={sub_title}
           version={version}
+          logo={logo}
           user={user}
         />
 

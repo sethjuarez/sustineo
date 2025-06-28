@@ -1,7 +1,15 @@
 from fastapi import APIRouter, Response, status
 
 from api.model import Design
-from api.cosmos import create_item, delete_item, get_item_by_id, get_items, update_all_items, update_item
+from api.cosmos import (
+    create_item,
+    delete_item,
+    get_item_by_id,
+    get_items,
+    get_items_by_query,
+    update_all_items,
+    update_item,
+)
 
 from azure.cosmos.exceptions import CosmosResourceNotFoundError
 
@@ -19,19 +27,49 @@ router = APIRouter(
 def design_mapper(item: dict) -> Design:
     return Design(
         id=item["id"],
+        default=item.get("default", False),
         background=item["background"],
         logo=item.get("logo", ""),
         title=item.get("title", ""),
         sub_title=item.get("sub_title", ""),
+        description=item.get("description", ""),
     )
+
+
+def design_to_dict(design: Design) -> dict:
+    return {
+        "id": design.id,
+        "default": design.default,
+        "background": design.background,
+        "logo": design.logo,
+        "title": design.title,
+        "sub_title": design.sub_title,
+        "description": design.description,
+    }
 
 
 @router.get("/")
 async def get_designs():
-    async with get_items(
-        DATABASE_NAME, CONTAINER_NAME, design_mapper
-    ) as designs:
+    async with get_items(DATABASE_NAME, CONTAINER_NAME, design_mapper) as designs:
         return designs
+
+
+@router.get("/default")
+async def get_default_design(response: Response) -> Design | dict[str, str]:
+    try:
+        async with get_items_by_query(
+            DATABASE_NAME,
+            CONTAINER_NAME,
+            "SELECT * FROM c WHERE c.default = true",
+            design_mapper,
+        ) as designs:
+            if not designs:
+                response.status_code = status.HTTP_404_NOT_FOUND
+                return {"error": "No default design found."}
+            return designs[0]
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {"error": str(e)}
 
 
 @router.get("/{id}")
@@ -61,14 +99,7 @@ async def create_design(
     response: Response,
 ) -> Design | dict[str, str]:
 
-    design_item = {
-        "id": design.id,
-        "background": design.background,
-        "logo": design.logo,
-        "title": design.title,
-        "sub_title": design.sub_title,
-        "default": design.default,
-    }
+    design_item = design_to_dict(design)
 
     try:
         async with create_item(
@@ -90,14 +121,7 @@ async def update_design(
     id: str, design: Design, response: Response
 ) -> Design | dict[str, str]:
 
-    design_item = {
-        "id": design.id,
-        "background": design.background,
-        "logo": design.logo,
-        "title": design.title,
-        "sub_title": design.sub_title,
-        "default": design.default,
-    }
+    design_item = design_to_dict(design)
 
     try:
         async with update_item(
@@ -137,7 +161,7 @@ async def delete_design(id: str, response: Response) -> dict[str, str]:
 
 
 @router.put("/default/{id}")
-async def set_default_configuration(id: str, response: Response) -> dict[str, str]:
+async def set_default_design(id: str, response: Response) -> dict[str, str]:
     def update_mapper(item: dict) -> dict:
         item["default"] = item["id"] == id
         return item

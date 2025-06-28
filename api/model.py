@@ -24,6 +24,7 @@ class Design:
     logo: str = field(default="")
     title: str = field(default="")
     sub_title: str = field(default="")
+    description: str = field(default="")
 
 
 # This is a default configuration class for the agent system.

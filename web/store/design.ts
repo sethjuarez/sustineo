@@ -7,6 +7,7 @@ export interface Design {
   logo: string;
   title: string;
   sub_title: string;
+  description: string; // Optional field for description
 }
 
 export interface DesignAction {
@@ -22,7 +23,7 @@ export class DesignConfiguration {
     this.endpoint = API_ENDPOINT;
   }
 
-  async fetchConfigurations(): Promise<Design[]> {
+  async fetchDesigns(): Promise<Design[]> {
     const response = await fetch(`${this.endpoint}/api/design/`);
     if (!response.ok) {
       throw new Error("Failed to fetch designs");
@@ -63,8 +64,8 @@ export class DesignConfiguration {
     return c;
   }
 
-  async updateDesign(design: Design): Promise<Design> {
-    const response = await fetch(`${this.endpoint}/api/design/${design.id}`, {
+  async updateDesign(designId: string, design: Design): Promise<Design> {
+    const response = await fetch(`${this.endpoint}/api/design/${designId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -96,6 +97,14 @@ export class DesignConfiguration {
     });
     if (!response.ok) {
       throw new Error("Failed to set default design");
+    }
+    return await response.json();
+  }
+
+  async fetchDefaultDesign(): Promise<Design> {
+    const response = await fetch(`${this.endpoint}/api/design/default`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch default design");
     }
     return await response.json();
   }

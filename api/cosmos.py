@@ -167,3 +167,24 @@ async def update_all_items(
         raise Exception(f"An error occurred while updating items: {str(e)}")
     finally:
         await client.close()
+
+
+@contextlib.asynccontextmanager
+async def get_items_by_query(
+    database_name: str,
+    container_name: str,
+    query: str,
+    mapper: Callable[[dict], Any] | None = None,
+):
+    client = CosmosClient.from_connection_string(COSMOSDB_CONNECTION)
+    try:
+        database = client.get_database_client(database_name)
+        container = database.get_container_client(container_name)
+
+        items = container.query_items(query=query)
+        if mapper:
+            yield [mapper(item) async for item in items]
+        else:
+            yield [item async for item in items]
+    finally:
+        await client.close()
