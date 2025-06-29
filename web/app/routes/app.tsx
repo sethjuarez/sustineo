@@ -96,7 +96,7 @@ export function meta({ data }: Route.MetaArgs) {
     ];
   }
   const title = `${data["title"] || "BuildEvents"} ${
-    data["sub_title"] || "by Contoso"
+    data["sub_title"] || ""
   }`;
   const description = data["description"] || "Making Things Happen since 1935";
   return [{ title: title }, { name: "description", content: description }];
