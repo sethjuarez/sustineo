@@ -6,6 +6,8 @@ import json
 from typing import Annotated
 
 import aiohttp
+import prompty
+import prompty.azure # type: ignore
 from api.agent.decorators import agent
 from api.model import AgentUpdateEvent, Content
 from api.storage import save_image_blobs, save_video_blob
@@ -16,6 +18,8 @@ AZURE_IMAGE_ENDPOINT = os.environ.get("AZURE_IMAGE_ENDPOINT", "EMPTY").rstrip("/
 AZURE_IMAGE_API_KEY = os.environ.get("AZURE_IMAGE_API_KEY", "EMPTY")
 AZURE_SORA_ENDPOINT = os.environ.get("AZURE_SORA_ENDPOINT", "EMPTY").rstrip("/")
 AZURE_SORA_API_KEY = os.environ.get("AZURE_SORA_API_KEY", "EMPTY")
+AZURE_OPENAI_ENDPOINT = os.environ.get("AZURE_OPENAI_ENDPOINT", "EMPTY").rstrip("/")
+AZURE_OPENAI_API_KEY = os.environ.get("AZURE_OPENAI_API_KEY", "EMPTY")
 
 
 @agent(
@@ -121,6 +125,74 @@ async def gpt_image_generation(
         )
 
         return images
+
+
+description_prompty = prompty.load("description.prompty")
+
+
+@agent(
+    name="Image Capture Agent",
+    description="""
+        This tool can capture an image using the user's camera.
+        Trigger this tool when the user wants to take a picture.
+        The system will automatically handle the camera capture
+        and provide the image data to the agent for it to process.
+        The agent will receive the image data as a base64 encoded string
+        and create a description of the image based on the captured content.
+        The agent should not ask the user to upload an image or take a picture,
+        as the UI will handle this automatically based on the kind parameter.
+        """,
+)
+async def gpt_image_capture(
+    image: Annotated[
+        str,
+        "The base64 encoded image data captured from the user's camera. The UI will handle the camera capture and provide the image data to the agent.",
+    ],
+    notify: AgentUpdateEvent,
+):
+    await notify(
+        id="image_capture",
+        status="run_in_progress",
+        information="Starting image description generation",
+    )
+
+    description = await prompty.execute_async(
+        description_prompty, inputs={"image": "data:image/jpg;base64," + image}
+    )
+
+    await notify(
+        id="image_capture",
+        status="run_in_progress",
+        information="Persisting image and description",
+    )
+
+    images: list[str] = []
+    async for blob in save_image_blobs([image]):
+        images.append(blob)
+        await notify(
+            id="image_capture",
+            status="step completed",
+            content=Content(
+                type="image",
+                content=[
+                    {
+                        "type": "image",
+                        "description": description,
+                        "image_url": blob,
+                        "kind": "CAMERA",
+                    }
+                ],
+            ),
+            output=True,
+        )
+
+    await notify(
+        id="image_capture",
+        status="run completed",
+        information="Image capture complete",
+    )
+
+    return images
 
 
 @agent(

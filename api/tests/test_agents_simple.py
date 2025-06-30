@@ -11,6 +11,7 @@ import base64
 from pathlib import Path
 
 from api.agent.agents import (
+    gpt_image_capture,
     gpt_image_edit,
     gpt_image_generation,
     publish_linkedin_post,
@@ -150,6 +151,28 @@ class TestAgentFunctions:
         )
 
         print(f"Generated video URL: {video}")
+
+    @pytest.mark.asyncio
+    async def test_image_capture(self, mock_notify):
+        """Test basic image editing functionality."""
+        # Load a sample image for testing
+        image_path = BASE_PATH / "images" / "seth.png"
+        with open(image_path, "rb") as image_file:
+            image = base64.b64encode(image_file.read()).decode()
+
+
+        # time call
+        start_time = time.monotonic()
+        edited_images = await gpt_image_capture(image, mock_notify)
+        end_time = time.monotonic()
+        print(f"Image capture took {end_time - start_time:.2f} seconds")
+        assert edited_images
+        assert isinstance(edited_images, list)
+        assert len(edited_images) > 0
+        assert isinstance(edited_images[0], str)
+        print(
+            f"Edited image URL: {edited_images[0]}"
+        )  # Assuming edited images are returned as URLs or paths
 
 
 if __name__ == "__main__":

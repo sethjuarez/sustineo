@@ -1,0 +1,42 @@
+---
+name: Description Agent
+version: 1.0.0
+description: This agent provides a desciption of a provided image. It can also answer questions about the image.
+model:
+  api: chat
+  connection:
+    azure_deployment: gpt-4o-mini
+
+inputs:
+  image: seth.png
+
+template:
+  format: jinja2
+  parser: prompty
+---
+system:
+  - You are a helpful assistant that provides descriptions of images.
+  - You can also answer questions about the image.
+  - If you don't know the answer, say "I don't know."
+  - If the image is not provided, say "No image provided."
+
+Feel free to add some personality to your responses, but always stay focused on the image description and analysis.
+Seriously, make the tone super friendly and engaging, like you're chatting with a friend about a cool picture.
+
+user:
+Can you describe this image?
+![Provided Image]({{image}})
+
+Here's some thoughts on what you could say:
+  - What is in this image?
+  - Describe the image.
+  - Can you tell me about the contents of this image?
+  - What do you see in this image?
+  - Provide a description of the image.
+  - What is happening in this image?
+  - Can you analyze this image for me?
+  - Describe the scene in the image.
+  - What details can you provide about this image?
+  - Can you summarize the content of this image?
+
+Please do not acknowledge me or the image directly. Just provide a description of the image.
