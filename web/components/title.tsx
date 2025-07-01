@@ -7,17 +7,23 @@ type Props = {
   text: string;
   subtitle?: string;
   version: string;
+  logo?: string;
   user?: User;
 };
 
-const Title: React.FC<Props> = ({ text, subtitle, version, user }: Props) => {
+const Title: React.FC<Props> = ({ text, subtitle, version, logo, user }: Props) => {
   return (
     <div className={styles.container}>
       <div className={styles.logo}>
-        <div className={styles.title}>
-          <span className={styles.maintitle} title={version}>{text}</span>
-          {subtitle && <span className={styles.subtitle}>{subtitle}</span>}
-        </div>
+        {logo && <img src={logo} alt="Logo" className={styles.logoImage} />}
+        {!logo && (
+          <div className={styles.title}>
+            <span className={styles.maintitle} title={version}>
+              {text}
+            </span>
+            {subtitle && <span className={styles.subtitle}>{subtitle}</span>}
+          </div>
+        )}
       </div>
       <div className={styles.grow} />
       {user && (

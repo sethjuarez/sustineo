@@ -9,7 +9,8 @@ from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, Response, WebSocket, WebSocketDisconnect
 
-from api.agent.storage import get_storage_client
+from api.cosmos import get_cosmos_container
+from api.storage import get_storage_client
 from api.connection import connections
 from api.model import Update
 from api.telemetry import init_tracing
@@ -17,12 +18,18 @@ from api.voice.common import get_default_configuration_data
 from api.voice.session import RealtimeSession
 from api.voice import router as voice_configuration_router
 from api.agent import router as agent_router
+from api.design import router as design_router
 from api.agent.common import get_custom_agents, create_foundry_thread
+
+# sub applications to mount
+from api.tools import tool_collection
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+
 
 from dotenv import load_dotenv
 
 load_dotenv()
+
 
 AZURE_VOICE_ENDPOINT = os.getenv("AZURE_VOICE_ENDPOINT") or ""
 AZURE_VOICE_KEY = os.getenv("AZURE_VOICE_KEY", "fake_key")
@@ -49,6 +56,7 @@ app = FastAPI(lifespan=lifespan, redirect_slashes=False)
 
 app.include_router(voice_configuration_router, tags=["voice"])
 app.include_router(agent_router, tags=["agents"])
+app.include_router(design_router, tags=["design"])
 
 app.add_middleware(
     CORSMiddleware,
@@ -57,6 +65,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+for tool in tool_collection:
+    mount = f"/tools/{tool.name}"
+    app.mount(mount, tool.app)
 
 
 class SimpleMessage(BaseModel):
@@ -70,12 +82,37 @@ async def health(response: Response):
     return {"status": "ok"}
 
 
+@app.get("/setup")
+async def setup(response: Response):
+    async with get_cosmos_container(
+        database_name="sustineo", container_name="VoiceConfigurations"
+    ) as container:
+        # Check if the container exists
+        if not container:
+            response.status_code = 500
+            return {"error": "Container not found or could not be created."}
+
+    async with get_cosmos_container(
+        database_name="sustineo", container_name="DesignConfigurations"
+    ) as design_container:
+        # Check if the design container exists
+        if not design_container:
+            response.status_code = 500
+            return {"error": "Design container not found or could not be created."}
+
+    return {
+        "message": "Setup completed successfully.",
+        "voice_container": "VoiceConfigurations",
+        "design_container": "DesignConfigurations",
+    }
+
+
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
 
 
-@app.get("/images/{image_id}")
+@app.get("/images/{image_id:path}")
 async def get_image(image_id: str):
     async with get_storage_client("sustineo") as container_client:
         # get the blob client for the image
@@ -91,7 +128,7 @@ async def get_image(image_id: str):
         return Response(content=image_bytes, media_type="image/png")
 
 
-@app.get("/videos/{video_id}")
+@app.get("/videos/{video_id:path}")
 async def get_video(video_id: str):
     async with get_storage_client("sustineo") as container_client:
         # get the blob client for the video
@@ -219,4 +256,6 @@ async def voice_endpoint(id: str, websocket: WebSocket):
         print("Voice Socket Disconnected", e)
 
 
-FastAPIInstrumentor.instrument_app(app, exclude_spans=["send", "receive"])
+FastAPIInstrumentor.instrument_app(
+    app, exclude_spans=["send", "receive"], excluded_urls="health"
+)

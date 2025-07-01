@@ -10,9 +10,21 @@ from openai.types.beta.realtime.session_update_event import SessionTool
 class Configuration:
     id: str
     name: str
-    default: bool
     content: str
+    default: bool = field(default=False)
     tools: list[dict[str, Any]] = field(default_factory=list)
+
+
+# This is a class representing a design configuration in the system.
+@dataclass
+class Design:
+    id: str
+    background: str
+    default: bool = field(default=False)
+    logo: str = field(default="")
+    title: str = field(default="")
+    sub_title: str = field(default="")
+    description: str = field(default="")
 
 
 # This is a default configuration class for the agent system.

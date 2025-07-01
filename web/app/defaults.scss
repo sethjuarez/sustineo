@@ -3,93 +3,93 @@
 $layout-breakpoint-small: 768px;
 $layout-breakpoint-medium: 1024px;
 
-$color-black: #000;
+// =============================================================================
+// SEMANTIC COLOR SYSTEM
+// =============================================================================
+
+// Base Colors
 $color-white: #fff;
-$color-zinc-50: #fafafa;
-$color-zinc-100: #f4f4f5;
-$color-zinc-200: #e4e4e7;
-$color-zinc-300: #d4d4d8;
-$color-zinc-400: #a1a1aa;
-$color-zinc-500: #71717a;
-$color-zinc-600: #52525b;
-$color-zinc-700: #3f3f46;
-$color-zinc-800: #27272a;
-$color-zinc-900: #18181b;
-$color-zinc-950: #09090b;
-$color-red-50: #fef2f2;
-$color-red-100: #fee2e2;
-$color-red-200: #fecaca;
-$color-red-300: #fca5a5;
-$color-red-400: #f87171;
-$color-red-500: #ef4444;
-$color-red-600: #dc2626;
-$color-red-700: #b91c1c;
-$color-red-800: #991b1b;
-$color-red-900: #7f1d1d;
-$color-red-950: #450a0a;
-$color-orange-50: #fff7ed;
-$color-orange-100: #ffedd5;
-$color-orange-200: #fed7aa;
-$color-orange-300: #fdba74;
-$color-orange-400: #fb923c;
-$color-orange-500: #f97316;
-$color-orange-600: #ea580c;
-$color-orange-700: #c2410c;
-$color-orange-800: #9a3412;
-$color-orange-900: #7c2d12;
-$color-orange-950: #431407;
-$color-emerald-50: #ecfdf5;
-$color-emerald-100: #d1fae5;
-$color-emerald-200: #a7f3d0;
-$color-emerald-300: #6ee7b7;
-$color-emerald-400: #34d399;
-$color-emerald-500: #10b981;
-$color-emerald-600: #059669;
-$color-emerald-700: #047857;
-$color-emerald-800: #065f46;
-$color-emerald-900: #064e3b;
-$color-emerald-950: #022c22;
-$color-sky-50: #f0f9ff;
-$color-sky-100: #e0f2fe;
-$color-sky-200: #bae6fd;
-$color-sky-300: #7dd3fc;
-$color-sky-400: #38bdf8;
-$color-sky-500: #0ea5e9;
-$color-sky-600: #0284c7;
-$color-sky-700: #0369a1;
-$color-sky-800: #075985;
-$color-sky-900: #0c4a6e;
-$color-sky-950: #082f49;
-$color-pink-50: #fdf2f8;
-$color-pink-100: #fce7f3;
-$color-pink-200: #fbcfe8;
-$color-pink-300: #f9a8d4;
-$color-pink-400: #f472b6;
-$color-pink-500: #ec4899;
-$color-pink-600: #db2777;
-$color-pink-700: #be185d;
-$color-pink-800: #9d174d;
-$color-pink-900: #831843;
-$color-pink-950: #500724;
-$color-rose-50: #fff1f2;
-$color-rose-100: #ffe4e6;
-$color-rose-200: #fecdd3;
-$color-rose-300: #fda4af;
-$color-rose-400: #fb7185;
-$color-rose-500: #f43f5e;
-$color-rose-600: #e11d48;
-$color-rose-700: #be123c;
-$color-rose-800: #9f1239;
-$color-rose-900: #881337;
-$color-rose-950: #4c0519;
+$color-black: #000;
 
+// Primary Colors (Blue/Sky theme for interactions)
+$color-primary-50: #f0f9ff;   // sky-50
+$color-primary-100: #e0f2fe;  // sky-100
+$color-primary-200: #bae6fd;  // sky-200
+$color-primary-300: #7dd3fc;  // sky-300
+$color-primary-400: #38bdf8;  // sky-400
+$color-primary-500: #0ea5e9;  // sky-500 - Main primary
+$color-primary-600: #0284c7;  // sky-600
+$color-primary-700: #0369a1;  // sky-700
+$color-primary-800: #075985;  // sky-800
+$color-primary-900: #0c4a6e;  // sky-900
 
-$font-family-sans: "Sora",
-sans-serif;
+// Neutral/Gray Colors (Zinc palette for UI elements)
+$color-neutral-50: #fafafa;   // zinc-50 - Background
+$color-neutral-100: #f4f4f5;  // zinc-100 - Light text/borders
+$color-neutral-200: #e4e4e7;  // zinc-200 - Button backgrounds
+$color-neutral-300: #d4d4d8;  // zinc-300 - Borders
+$color-neutral-400: #a1a1aa;  // zinc-400 - Muted text
+$color-neutral-500: #71717a;  // zinc-500
+$color-neutral-600: #52525b;  // zinc-600 - Active borders
+$color-neutral-700: #3f3f46;  // zinc-700
+$color-neutral-800: #27272a;  // zinc-800 - Dark text
+$color-neutral-900: #18181b;  // zinc-900 - Main text
+$color-neutral-950: #09090b;  // zinc-950
 
-$font-family-serif: ui-serif,
-    Georgia,
-    Cambria,
-    "Times New Roman",
-    Times,
-    serif;
+// Accent Colors
+$color-accent-orange: #fed7aa;  // orange-200 - For warnings/highlights
+$color-accent-orange-text: #fdba74; // orange-300 - For accent text
+
+// Error/Danger Colors
+$color-danger: #991b1b;        // red-800 - For errors
+
+// Special Purpose Colors
+$color-code-background: #f0f0f0;  // For code blocks
+
+// =============================================================================
+// SEMANTIC ALIASES
+// =============================================================================
+
+// Background Colors
+$color-background-primary: $color-neutral-50;
+$color-background-secondary: $color-white;
+$color-background-button: $color-neutral-200;
+$color-background-button-hover: $color-primary-200;
+$color-background-accent: $color-accent-orange;
+$color-background-danger: $color-danger;
+$color-background-overlay: rgba(39, 39, 42, 0.75); // neutral-800 with alpha
+
+// Text Colors
+$color-text-primary: $color-neutral-900;
+$color-text-secondary: $color-neutral-800;
+$color-text-muted: $color-neutral-400;
+$color-text-light: $color-neutral-100;
+$color-text-accent: $color-accent-orange-text;
+
+// Border Colors
+$color-border-default: $color-neutral-300;
+$color-border-focus: $color-primary-600;
+$color-border-active: $color-neutral-600;
+
+// Icon Colors
+$color-icon-primary: $color-primary-800;
+$color-icon-secondary: $color-primary-600;
+
+// =============================================================================
+// SHADOW SYSTEM
+// =============================================================================
+
+// Shadow values
+$shadow-black-10: rgba(0, 0, 0, 0.1);
+$shadow-black-05: rgba(0, 0, 0, 0.05);
+$shadow-black-06: rgba(0, 0, 0, 0.06);
+
+// Shadow patterns
+$shadow-sm: 0 2px 4px -1px $shadow-black-06;
+$shadow-md: 0 4px 6px -1px $shadow-black-10, 0 2px 4px -1px $shadow-black-06;
+$shadow-lg: 0 10px 15px -3px $shadow-black-10, 0 4px 6px -2px $shadow-black-05;
+$shadow-drop: drop-shadow(0px 4px 20px $shadow-black-10);
+
+$font-family-sans: "Sora", sans-serif;
+
+$font-family-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;

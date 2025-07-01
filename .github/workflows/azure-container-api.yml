@@ -70,6 +70,7 @@ jobs:
                                 "SUSTINEO_STORAGE=secretref:sustineo-storage" \
                                 "AZURE_SORA_ENDPOINT=secretref:azure-sora-endpoint" \
                                 "AZURE_SORA_API_KEY=secretref:azure-sora-api-key" \
+                                "BASE_URL=secretref:base-url" \
                                 "LOCAL_TRACING_ENABLED=false"
 
       - name: Logout

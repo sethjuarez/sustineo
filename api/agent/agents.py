@@ -6,9 +6,11 @@ import json
 from typing import Annotated
 
 import aiohttp
+import prompty
+import prompty.azure  # type: ignore
 from api.agent.decorators import agent
 from api.model import AgentUpdateEvent, Content
-from api.agent.storage import save_image_blobs, save_video_blob
+from api.storage import save_image_blobs, save_video_blob
 from api.agent.common import execute_foundry_agent, post_request
 from typing import Annotated
 import uuid
@@ -28,6 +30,8 @@ AZURE_IMAGE_ENDPOINT = os.environ.get("AZURE_IMAGE_ENDPOINT", "EMPTY").rstrip("/
 AZURE_IMAGE_API_KEY = os.environ.get("AZURE_IMAGE_API_KEY", "EMPTY")
 AZURE_SORA_ENDPOINT = os.environ.get("AZURE_SORA_ENDPOINT", "EMPTY").rstrip("/")
 AZURE_SORA_API_KEY = os.environ.get("AZURE_SORA_API_KEY", "EMPTY")
+AZURE_OPENAI_ENDPOINT = os.environ.get("AZURE_OPENAI_ENDPOINT", "EMPTY").rstrip("/")
+AZURE_OPENAI_API_KEY = os.environ.get("AZURE_OPENAI_API_KEY", "EMPTY")
 
 
 @agent(
@@ -133,6 +137,81 @@ async def gpt_image_generation(
         )
 
         return images
+
+
+description_prompty = prompty.load("description.prompty")
+
+
+@agent(
+    name="Image Capture Agent",
+    description="""
+        This tool can capture an image using the user's camera.
+        Trigger this tool when the user wants to take a picture.
+        The system will automatically handle the camera capture
+        and provide the image data to the agent for it to process.
+        The agent will receive the image data as a base64 encoded string
+        and create a description of the image based on the captured content.
+        The agent should not ask the user to upload an image or take a picture,
+        as the UI will handle this automatically based on the kind parameter.
+        """,
+)
+async def gpt_image_capture(
+    image: Annotated[
+        str,
+        "The base64 encoded image data captured from the user's camera. The UI will handle the camera capture and provide the image data to the agent.",
+    ],
+    kind: Annotated[
+        str,
+        'This can be either a file upload or an image that is captured with the users camera. Choose "FILE" if the image is uploaded from the users device. Choose "CAMERA" if the image should be captured with the users camera.',
+    ],
+    notify: AgentUpdateEvent,
+):
+    await notify(
+        id="image_capture",
+        status="run_in_progress",
+        information="Starting image description generation",
+    )
+
+    if not image.startswith("data:image/jpeg;base64,"):
+        image = "data:image/jpeg;base64," + image
+
+    description = await prompty.execute_async(
+        description_prompty, inputs={"image": image}
+    )
+
+    await notify(
+        id="image_capture",
+        status="run_in_progress",
+        information="Persisting image and description",
+    )
+
+    images: list[str] = []
+    async for blob in save_image_blobs([image.replace("data:image/jpeg;base64,", "")]):
+        images.append(blob)
+        await notify(
+            id="image_capture",
+            status="step completed",
+            content=Content(
+                type="image",
+                content=[
+                    {
+                        "type": "image",
+                        "description": description,
+                        "image_url": blob,
+                        "kind": kind,
+                    }
+                ],
+            ),
+            output=True,
+        )
+
+    await notify(
+        id="image_capture",
+        status="run completed",
+        information="Image capture complete",
+    )
+
+    return images
 
 
 @agent(
@@ -448,114 +527,32 @@ The post should be in markdown format.
 
 
 @agent(
-    name="Post Tweet with Image",
+    name="Zava Custom Apparel Design Agent",
     description="""
-        Posts a tweet with an image to Twitter. 
-        You will receive as input:
-        - content (string): Body of the post or finalized draft.
-        - image_url (string, optional): Format should always start with https://sustineo-api.jollysmoke-a2364653.eastus2.azurecontainerapps.io/images/
-        - example image_url: https://sustineo-api.jollysmoke-a2364653.eastus2.azurecontainerapps.io/images/acd7fe97-8d22-48ca-a06c-d38b769a8924.png
-        - use the provided image_url
-    """
+    You are a custom apparel design agent for Zava that can take an image and a description of the design request and create a custom apparel design based on the provided image and description.
+    You will receive as input:
+    - description (string): The full design request description formulated in a specific way so as to elicit the desired response from the agent.
+    - image_url (string, optional): Format should always start with https://sustineo-api.jollysmoke-a2364653.eastus2.azurecontainerapps.io/images/
+    - example image_url: https://sustineo-api.jollysmoke-a2364653.eastus2.azurecontainerapps.io/images/acd7fe97-8d22-48ca-a06c-d38b769a8924.png
+    - use the provided image_url
+    """,
 )
-async def post_tweet_with_image(
+async def zava_custom_agent(
+    description: Annotated[str, "The full design request description formulated in a specific way so as to elicit the desired response from the agent."],
     image_url: Annotated[
         str,
         "Format should always start with https://sustineo-api.jollysmoke-a2364653.eastus2.azurecontainerapps.io/images/",
     ],
-    content: Annotated[str, "Text of the tweet (max 280 chars)"],
     notify: AgentUpdateEvent,
 ):
-    await notify(id="post_tweet_image", status="run in_progress", information="Downloading image …")
-
-    # ------------------------------------------------------------------
-    # Setp 1: Download the Image
-    # OAuth 1.0a session – used for BOTH upload and status update
-    # ------------------------------------------------------------------
-    auth_v1 = tweepy.OAuth1UserHandler(
-        TW_API_KEY, TW_API_SECRET, TW_ACCESS_TOKEN, TW_ACCESS_TOKEN_SECRET
-    )
-    api_v1 = tweepy.API(auth_v1, wait_on_rate_limit=True)
-
-    # Download the image ------------------------------------------------
-    await notify(
-    id="post_tweet_image",
-    status="run in_progress",
-    information="Downloading image …"
-    )
-
-    try:
-        image_response = requests.get(image_url, timeout=10)
-        image_response.raise_for_status()
-
-        with open("temp_image_upload.png", "wb") as f:
-            f.write(image_response.content)
-
-        await notify(
-            id="post_tweet_image",
-            status="step completed",
-            information="Image downloaded"
-        )
-
-    except Exception as exc:
-        await notify(
-            id="post_tweet_image",
-            status="run failed",
-            information=f"Failed to download image: {exc}"
-        )
-
-    
-    # ------------------------------------------------------------------
-    # Setp 2: Upload the Image to Twitter
-    # OAuth 1.0a session – used to upload media to Twitter/X. This is required
-    # ------------------------------------------------------------------
-    await notify(id="post_tweet_image",
-                 status="step in_progress",
-                 information="Uploading image to Twitter …")
-
-    try:
-        media = api_v1.media_upload("temp_image_upload.png")
-        media_id = media.media_id_string
-    except Exception as exc:
-        await notify(
-            id="post_tweet_image",
-            status="run failed",
-            information=f"Error uploading image: {exc}",
-        )
-        return
-
-    await notify(id="post_tweet_image",
-                 status="step completed",
-                 information="Image uploaded")
-    
-    # ------------------------------------------------------------------
-    # Step 3: Post the Tweet with the Image
-    # Post tweet (v2 – OAuth 2.0 user-context). Required to use OAth 2.0
-    # ------------------------------------------------------------------
-    await notify(id="post_tweet_image", status="step in_progress", information="Posting tweet …")
-
-    payload = {"text": content, "media": {"media_ids": [media_id]}}
-    headers = {
-        "Authorization": f"Bearer {TW_BEARER_TOKEN}",
-        "Content-Type": "application/json",
-    }
-    resp = requests.post("https://api.twitter.com/2/tweets", headers=headers, json=payload)
-
-    if resp.status_code not in (200, 201):
-        await notify(
-            id="post_tweet_image",
-            status="run failed",
-            information=f"Error posting tweet: {resp.text}",
-        )
-        return
-
-    tweet_id = resp.json().get("data", {}).get("id", "")
-    tweet_url = f"https://x.com/i/web/status/{tweet_id}" if tweet_id else "(tweet created)"
-
-    await notify(
-        id="post_tweet_image",
-        status="run completed",
-        information="Tweet posted!",
-        content=Content(type="text", content=[{"type": "text", "value": f"Tweeted: {tweet_url}"}]),
-        output=True,
+    instructions = f"""
+Use the following `image_url`: {image_url}
+IMPORTANT: Use this `image_url` exactly as it is when calling your tools. Do not change the image_url.
+"""
+    await execute_foundry_agent(
+        agent_id="asst_rdQIFaUBX7dVbdSFedJbQSpJ",
+        additional_instructions=instructions,
+        query=description,
+        tools={},
+        notify=notify,
     )

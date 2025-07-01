@@ -5,7 +5,7 @@
   padding-top: 1.5rem;
   height: 3.5rem;
   z-index: 1500;
-  color: $color-zinc-400;
+  color: $color-text-muted;
   width: calc(100vw - 5rem);
   display: flex;
   flex-direction: row;
@@ -30,7 +30,7 @@
   display: flex;
   flex-direction: row;
   align-items: flex-end;
-  color: $color-zinc-100;
+  color: $color-text-light;
   gap: 5px;
 }
 
@@ -42,7 +42,7 @@
 .subtitle {
   font-size: 0.75rem;
   font-weight: 400;
-  color: $color-zinc-100;
+  color: $color-text-light;
   padding-bottom: 0.25rem;
 }
 
@@ -51,7 +51,7 @@
   top: -0.25rem;
   right: 0.75rem;
   font-size: 0.75rem;
-  color: $color-zinc-100;
+  color: $color-text-light;
   opacity: 0.5;
 }
 
@@ -66,14 +66,14 @@
 .name {
   font-weight: 600;
   text-align: right;
-  color: $color-zinc-100;
+  color: $color-text-light;
 }
 
 .email {
   font-size: 0.75rem;
   line-height: 1rem;
   text-align: right;
-  color: $color-zinc-100;
+  color: $color-text-light;
   opacity: 0.5;
 }
 
@@ -85,9 +85,9 @@
 }
 
 .userIcon {
-  background-color: $color-zinc-100;
-  color: $color-zinc-800;
-  border: solid 1px $color-zinc-300;
+  background-color: $color-text-light;
+  color: $color-text-secondary;
+  border: solid 1px $color-border-default;
   border-radius: 50%;
   width: 32px;
   height: 32px;

@@ -19,7 +19,7 @@
   padding: 0.5rem;
   border-radius: 0.375rem;
   border: 0px;
-  outline: 2px solid $color-zinc-300;
+  outline: 2px solid $color-neutral-300;
   font-size: large;
   flex-grow: 1;
   width: calc(100% - 16px);
@@ -36,11 +36,11 @@
   border-radius: 0.375rem;
   border-width: 0px;
   border-style: solid;
-  outline: 2px solid $color-zinc-300;
+  outline: 2px solid $color-neutral-300;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: $color-zinc-200;
+  background-color: $color-neutral-300;
   cursor: pointer;
 }
 
@@ -49,17 +49,17 @@
   padding: 0.5rem;
   border-radius: 0.375rem;
   border: 0px;
-  outline: 2px solid $color-zinc-300;
+  outline: 2px solid $color-neutral-300;
   font-size: large;
   flex-grow: 1;
 }
 
 .mediaselect:focus {
-  outline: 2px solid $color-sky-500;
+  outline: 2px solid $color-primary-500;
 }
 
 .mediaselect:focus-visible {
-  outline: 2px solid $color-sky-500;
+  outline: 2px solid $color-primary-500;
 }
 
 .radioGroup {

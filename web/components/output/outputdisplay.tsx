@@ -60,24 +60,20 @@ const OutputDisplay = React.forwardRef<OuptutDisplayHandle, {}>((_, ref) => {
       case "text":
         return <TextOutput text={data} />;
       case "image":
-        if (data.image_url.startsWith("http")) {
+        const imageUrl = data.image_url.startsWith("http")
+          ? data.image_url
+          : `${API_ENDPOINT}/${data.image_url}`;
           return (
             <img
-              src={data.image_url}
+              src={imageUrl}
               alt={data.description}
               style={{ width: "auto", height: "960px" }}
             />
           );
-        } else {
-          return (
-            <img
-              src={`${API_ENDPOINT}/${data.image_url}`}
-              alt={data.description}
-              style={{ width: "auto", height: "960px" }}
-            />
-          );
-        }
       case "video":
+        const videoUrl = data.video_url.startsWith("http")
+          ? data.video_url
+          : `${API_ENDPOINT}/${data.video_url}`;
         return (
           <video
             controls
@@ -85,7 +81,7 @@ const OutputDisplay = React.forwardRef<OuptutDisplayHandle, {}>((_, ref) => {
             autoPlay
             loop
             muted
-            src={`${API_ENDPOINT}/${data.video_url}`}
+            src={videoUrl}
           >
             Your browser does not support the video tag.
           </video>
