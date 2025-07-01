@@ -7,11 +7,13 @@ async def test_gpt_image_generation():
 
     """Test the image generation functionality."""
     request = ImageCreateRequest(
-        description="A beautiful sunset over the mountains",
-        image="https://sustineo-api.jollysmoke-a2364653.eastus2.azurecontainerapps.io/images/c0abeec1-c7fd-4ceb-a1b3-73d84617a078.png",
+        description="A custom Zava hoodie design featuring a light blue color scheme with intricate floral designs. The hoodie is worn by an abstract model in a serene woodland setting, conveying a fresh and natural vibe. The logo on the hoodie is an abstract, cartoonified depiction of Seth Juarez's face, designed for tasteful needlework stitching. The overall aesthetic is modern, professional, and appealing, suitable for production, highlighting Zava's innovative approach to wearable technology.",
+        image="https://sustineo-api.jollysmoke-a2364653.eastus2.azurecontainerapps.io/images/6187080e-1020-4e76-bc4b-9a0167f25f56.png",
     )
     response = await create_image(
         request=request
     )
+
+    print(f"Image URL: {response.image_url}")
 
     assert response is not None

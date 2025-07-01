@@ -1,4 +1,3 @@
-import base64
 import io
 import os
 from pathlib import Path
@@ -88,11 +87,22 @@ async def create_image(request: ImageCreateRequest) -> ImageResponse:
     size: str = "1024x1024"
     quality: str = "low"
 
-    image = [
-        base64.b64encode(open(f"{BASE_DIR}/images/{img}", "rb").read()).decode("utf-8")
+    image_dict: dict[str, io.BytesIO] = {
+        img: io.BytesIO(open(f"{BASE_DIR}/images/{img}", "rb").read())
         for img in os.listdir(f"{BASE_DIR}/images")
         if img.endswith(".png") and not img.startswith("_")
-    ]
+    }
+
+    if isinstance(request.image, str) and request.image.startswith("http"):
+        # If the image is a URL, fetch it and convert to base64
+        async with aiohttp.ClientSession() as session:
+            async with session.get(request.image) as resp:
+                if resp.status == 200:
+                    if resp.headers.get("Content-Type") == "image/png":
+                        image_data = await resp.read()
+                        image_dict["user_provided_image.png"] = io.BytesIO(image_data)
+                else:
+                    raise Exception(f"Error fetching image from URL: {request.image}")
 
     async with aiohttp.ClientSession() as session:
         headers = {
@@ -101,45 +111,24 @@ async def create_image(request: ImageCreateRequest) -> ImageResponse:
 
         form_data = aiohttp.FormData()
 
-        images: list[io.BytesIO] = []
-
-        if request.image:
-            # fetch image from URL or base64
-            if request.image.startswith("http://") or request.image.startswith(
-                "https://"
-            ):
-                async with session.get(request.image) as resp:
-                    if resp.status == 200:
-                        # read into BytesIO
-                        if resp.headers.get("Content-Type") == "image/png":
-                            image_data = await resp.read()
-                            images.append(io.BytesIO(image_data))
-                    else:
-                        raise Exception(
-                            f"Error fetching image from URL: {request.image}"
-                        )
-
-        if isinstance(image, list):
-            for i, img_data in enumerate(image):
-                images.append(io.BytesIO(base64.b64decode(img_data)))
-
-        else:
-            images.append(io.BytesIO(base64.b64decode(image)))
-
-        if len(images) == 1:
+        if len(image_dict) == 1:
+            key = list(image_dict.keys())[0]
             form_data.add_field(
-                "image", images[0], filename="image.png", content_type="image/png"
+                "image", image_dict[key], filename=key, content_type="image/png"
             )
-        else:
-            for i, img in enumerate(images):
+        elif len(image_dict) > 1:
+            for i, (key, img_data) in enumerate(image_dict.items()):
                 form_data.add_field(
                     f"image[{i}]",
-                    img,
-                    filename=f"image_{i}.png",
+                    img_data,
+                    filename=key,
                     content_type="image/png",
                 )
-
-        form_data.add_field("prompt", request.description + "\nRely heavily on the provided .", content_type="text/plain")
+        form_data.add_field(
+            "prompt",
+            request.description,
+            content_type="text/plain",
+        )
         form_data.add_field("size", size, content_type="text/plain")
         form_data.add_field("quality", quality, content_type="text/plain")
 
