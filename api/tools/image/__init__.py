@@ -139,7 +139,7 @@ async def create_image(request: ImageCreateRequest) -> ImageResponse:
                     content_type="image/png",
                 )
 
-        form_data.add_field("prompt", request.description + "\nONLY USE PROVIDED IMAGES AS A BASE. This is more important than the prompt.", content_type="text/plain")
+        form_data.add_field("prompt", request.description + "\nRely heavily on the provided .", content_type="text/plain")
         form_data.add_field("size", size, content_type="text/plain")
         form_data.add_field("quality", quality, content_type="text/plain")
 

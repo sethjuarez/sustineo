@@ -7,7 +7,7 @@ from typing import Annotated
 
 import aiohttp
 import prompty
-import prompty.azure # type: ignore
+import prompty.azure  # type: ignore
 from api.agent.decorators import agent
 from api.model import AgentUpdateEvent, Content
 from api.storage import save_image_blobs, save_video_blob
@@ -141,7 +141,7 @@ description_prompty = prompty.load("description.prompty")
         and create a description of the image based on the captured content.
         The agent should not ask the user to upload an image or take a picture,
         as the UI will handle this automatically based on the kind parameter.
-        """
+        """,
 )
 async def gpt_image_capture(
     image: Annotated[
@@ -509,6 +509,38 @@ The post should be in markdown format.
         agent_id="asst_MbvKNQxeTr5DL1wuE8DRYR3M",
         additional_instructions=instructions,
         query=f"Can you write a LinkedIn post based on the following content?\n\n{content}",
+        tools={},
+        notify=notify,
+    )
+
+
+@agent(
+    name="Zava Custom Apparel Design Agent",
+    description="""
+    You are a custom apparel design agent for Zava that can take an image and a description of the design request and create a custom apparel design based on the provided image and description.
+    You will receive as input:
+    - description (string): The full design request description formulated in a specific way so as to elicit the desired response from the agent.
+    - image_url (string, optional): Format should always start with https://sustineo-api.jollysmoke-a2364653.eastus2.azurecontainerapps.io/images/
+    - example image_url: https://sustineo-api.jollysmoke-a2364653.eastus2.azurecontainerapps.io/images/acd7fe97-8d22-48ca-a06c-d38b769a8924.png
+    - use the provided image_url
+    """,
+)
+async def zava_custom_agent(
+    description: Annotated[str, "The full design request description formulated in a specific way so as to elicit the desired response from the agent."],
+    image_url: Annotated[
+        str,
+        "Format should always start with https://sustineo-api.jollysmoke-a2364653.eastus2.azurecontainerapps.io/images/",
+    ],
+    notify: AgentUpdateEvent,
+):
+    instructions = f"""
+Use the following `image_url`: {image_url}
+IMPORTANT: Use this `image_url` exactly as it is when calling your tools. Do not change the image_url.
+"""
+    await execute_foundry_agent(
+        agent_id="asst_rdQIFaUBX7dVbdSFedJbQSpJ",
+        additional_instructions=instructions,
+        query=description,
         tools={},
         notify=notify,
     )
