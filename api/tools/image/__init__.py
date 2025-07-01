@@ -2,7 +2,7 @@ import base64
 import io
 import os
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, Optional
 import uuid
 import aiohttp
 from fastapi import FastAPI
@@ -66,6 +66,14 @@ class ImageCreateRequest(BaseModel):
             ],
         ),
     ]
+    image: Annotated[
+        Optional[str],
+        Field(
+            title="Image",
+            description="An optional url or base64-encoded image to be used as a reference for the new image. If provided, it will be used to guide the generation process.",
+            examples=["https://example.com/reference_image.png"],
+        ),
+    ] = None
 
 
 @app.post(
@@ -93,22 +101,45 @@ async def create_image(request: ImageCreateRequest) -> ImageResponse:
 
         form_data = aiohttp.FormData()
 
+        images: list[io.BytesIO] = []
+
+        if request.image:
+            # fetch image from URL or base64
+            if request.image.startswith("http://") or request.image.startswith(
+                "https://"
+            ):
+                async with session.get(request.image) as resp:
+                    if resp.status == 200:
+                        # read into BytesIO
+                        if resp.headers.get("Content-Type") == "image/png":
+                            image_data = await resp.read()
+                            images.append(io.BytesIO(image_data))
+                    else:
+                        raise Exception(
+                            f"Error fetching image from URL: {request.image}"
+                        )
+
         if isinstance(image, list):
             for i, img_data in enumerate(image):
-                img = io.BytesIO(base64.b64decode(img_data))
+                images.append(io.BytesIO(base64.b64decode(img_data)))
+
+        else:
+            images.append(io.BytesIO(base64.b64decode(image)))
+
+        if len(images) == 1:
+            form_data.add_field(
+                "image", images[0], filename="image.png", content_type="image/png"
+            )
+        else:
+            for i, img in enumerate(images):
                 form_data.add_field(
                     f"image[{i}]",
                     img,
                     filename=f"image_{i}.png",
                     content_type="image/png",
                 )
-        else:
-            img = io.BytesIO(base64.b64decode(image))
-            form_data.add_field(
-                "image", img, filename="image.png", content_type="image/png"
-            )
 
-        form_data.add_field("prompt", request.description, content_type="text/plain")
+        form_data.add_field("prompt", request.description + "\nONLY USE PROVIDED IMAGES AS A BASE. This is more important than the prompt.", content_type="text/plain")
         form_data.add_field("size", size, content_type="text/plain")
         form_data.add_field("quality", quality, content_type="text/plain")
 
@@ -124,5 +155,5 @@ async def create_image(request: ImageCreateRequest) -> ImageResponse:
             else:
                 error_message = await response.text()
                 raise Exception(f"Error generating image: {error_message}")
-        
+
         raise Exception("No image data returned from the API.")

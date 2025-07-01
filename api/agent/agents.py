@@ -141,12 +141,16 @@ description_prompty = prompty.load("description.prompty")
         and create a description of the image based on the captured content.
         The agent should not ask the user to upload an image or take a picture,
         as the UI will handle this automatically based on the kind parameter.
-        """,
+        """
 )
 async def gpt_image_capture(
     image: Annotated[
         str,
         "The base64 encoded image data captured from the user's camera. The UI will handle the camera capture and provide the image data to the agent.",
+    ],
+    kind: Annotated[
+        str,
+        'This can be either a file upload or an image that is captured with the users camera. Choose "FILE" if the image is uploaded from the users device. Choose "CAMERA" if the image should be captured with the users camera.',
     ],
     notify: AgentUpdateEvent,
 ):
@@ -156,8 +160,11 @@ async def gpt_image_capture(
         information="Starting image description generation",
     )
 
+    if not image.startswith("data:image/jpeg;base64,"):
+        image = "data:image/jpeg;base64," + image
+
     description = await prompty.execute_async(
-        description_prompty, inputs={"image": "data:image/jpg;base64," + image}
+        description_prompty, inputs={"image": image}
     )
 
     await notify(
@@ -167,7 +174,7 @@ async def gpt_image_capture(
     )
 
     images: list[str] = []
-    async for blob in save_image_blobs([image]):
+    async for blob in save_image_blobs([image.replace("data:image/jpeg;base64,", "")]):
         images.append(blob)
         await notify(
             id="image_capture",
@@ -179,7 +186,7 @@ async def gpt_image_capture(
                         "type": "image",
                         "description": description,
                         "image_url": blob,
-                        "kind": "CAMERA",
+                        "kind": kind,
                     }
                 ],
             ),

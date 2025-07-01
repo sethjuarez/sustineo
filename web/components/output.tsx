@@ -79,9 +79,12 @@ const Output: React.FC<Props> = ({ data }: Props) => {
         </>
       );
     } else if (data.type === "image") {
+      
       const url = data.image_url.startsWith("http")
         ? data.image_url
         : `${API_ENDPOINT}/${data.image_url}`;
+
+      //console.log("Generating image for", id, data, url);
 
       const max_size = Math.max(width, height);
       const new_x = (width - max_size) / 2;

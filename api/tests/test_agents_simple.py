@@ -163,7 +163,7 @@ class TestAgentFunctions:
 
         # time call
         start_time = time.monotonic()
-        edited_images = await gpt_image_capture(image, mock_notify)
+        edited_images = await gpt_image_capture(image, "CAMERA", mock_notify)
         end_time = time.monotonic()
         print(f"Image capture took {end_time - start_time:.2f} seconds")
         assert edited_images
