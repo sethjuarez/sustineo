@@ -87,10 +87,14 @@ async def create_image(request: ImageCreateRequest) -> ImageResponse:
     size: str = "1024x1024"
     quality: str = "low"
 
-    image_dict: dict[str, io.BytesIO] = {
-        img: io.BytesIO(open(f"{BASE_DIR}/images/{img}", "rb").read())
-        for img in os.listdir(f"{BASE_DIR}/images")
-        if img.endswith(".png") and not img.startswith("_")
+    # image_dict: dict[str, io.BytesIO] = {
+    #    img: io.BytesIO(open(f"{BASE_DIR}/images/{img}", "rb").read())
+    #    for img in os.listdir(f"{BASE_DIR}/images")
+    #    if img.endswith(".png") and not img.startswith("_")
+    # }
+
+    image_dict = {
+        "base.png": io.BytesIO(open(f"{BASE_DIR}/images/base.png", "rb").read())
     }
 
     if isinstance(request.image, str) and request.image.startswith("http"):
@@ -124,13 +128,24 @@ async def create_image(request: ImageCreateRequest) -> ImageResponse:
                     filename=key,
                     content_type="image/png",
                 )
+
+        # add description, size, and quality
+        additional_instructions = """
+        DO NOT INCLUDE ANY OTHER LOGOS, JUST THE NEW LOGO INSPIRED BY THE PROVIDED IMAGE. DO NOT UNDER ANY CIRCUMSTANCE ADD A NIKE SWOOSH OR ANY OTHER LOGO.
+        """
         form_data.add_field(
             "prompt",
-            request.description + "\nIt is important that there be NO text generated for the image and any included visuals should be used as logo inspiration. IMPORTANT - DO NOT GENERATE TEXT IN THE IMAGE - generate visual approximations of logos inspired by the provided images.",
+            request.description + additional_instructions,
             content_type="text/plain",
         )
         form_data.add_field("size", size, content_type="text/plain")
         form_data.add_field("quality", quality, content_type="text/plain")
+
+        # add mask
+        mask_data = io.BytesIO(open(f"{BASE_DIR}/images/base_mask.png", "rb").read())
+        form_data.add_field(
+            "mask", mask_data, filename="mask.png", content_type="image/png"
+        )
 
         async with session.post(endpoint, headers=headers, data=form_data) as response:
             if response.status == 200:
