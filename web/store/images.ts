@@ -104,6 +104,9 @@ export const fetchCachedImage = async (
     reader.onloadend = () => {
       const base64data = reader.result;
       setImage(base64data as string);
+      // remove the image from cache after setting it
+      // This is to ensure that the image is not cached forever
+      removeCachedBlob(image);
     };
   }
 };

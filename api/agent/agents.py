@@ -533,10 +533,14 @@ async def zava_custom_agent(
     ],
     notify: AgentUpdateEvent,
 ):
-    instructions = f"""
-Use the following `image_url`: {image_url}
-IMPORTANT: Use this `image_url` exactly as it is when calling your tools. Do not change the image_url.
-"""
+    if len(image_url) > 0:
+        instructions = f"""
+        Use the following `image_url`: {image_url}
+        IMPORTANT: Use this `image_url` exactly as it is when calling your tools. Do not change the image_url.
+        """
+    else:
+        instructions = ""
+        
     await execute_foundry_agent(
         agent_id="asst_rdQIFaUBX7dVbdSFedJbQSpJ",
         additional_instructions=instructions,

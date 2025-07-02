@@ -126,7 +126,7 @@ async def create_image(request: ImageCreateRequest) -> ImageResponse:
                 )
         form_data.add_field(
             "prompt",
-            request.description,
+            request.description + "\nIt is important that there be NO text generated for the image and any included visuals should be used as logo inspiration. IMPORTANT - DO NOT GENERATE TEXT IN THE IMAGE - generate visual approximations of logos inspired by the provided images.",
             content_type="text/plain",
         )
         form_data.add_field("size", size, content_type="text/plain")

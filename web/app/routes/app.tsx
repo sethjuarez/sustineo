@@ -239,6 +239,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
           }
         } else {
           // check for client side agents
+          /*
           sendRealtime({
             id: serverEvent.id,
             type: "function_completion",
@@ -246,6 +247,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
             output: `This is a message from the function call that it is in progress. 
             You can ignore it and continue the conversation until the function call is completed.`,
           });
+          */
 
           effort?.addEffort(serverEvent);
 
@@ -334,6 +336,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
         image: img,
       };
 
+      /*
       sendRealtime({
         id: imageFunctionCall.id,
         type: "function_completion",
@@ -341,6 +344,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
         output: `This is a message from the function call that it is in progress. 
         You can ignore it and continue the conversation until the function call is completed.`,
       });
+      */
 
       const api = `${API_ENDPOINT}/api/agent/${user.key}`;
       console.log("Sending function call to agent", api, imageFunctionCall);
