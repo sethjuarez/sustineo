@@ -131,7 +131,10 @@ async def create_image(request: ImageCreateRequest) -> ImageResponse:
 
         # add description, size, and quality
         additional_instructions = """
-        DO NOT INCLUDE ANY OTHER LOGOS, JUST THE NEW LOGO INSPIRED BY THE PROVIDED IMAGE. DO NOT UNDER ANY CIRCUMSTANCE ADD A NIKE SWOOSH OR ANY OTHER LOGO.
+        DO NOT INCLUDE ANY TEXT OR WATERMARKS IN THE LOGO.
+        DO NOT INCLUDE ANY OTHER LOGOS, JUST THE NEW LOGO 
+        INSPIRED BY THE PROVIDED IMAGE. DO NOT UNDER ANY 
+        CIRCUMSTANCE ADD A NIKE SWOOSH OR ANY OTHER LOGO.
         """
         form_data.add_field(
             "prompt",
