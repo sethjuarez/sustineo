@@ -94,7 +94,7 @@ async def create_image(request: ImageCreateRequest) -> ImageResponse:
     # }
 
     image_dict = {
-        "base.png": io.BytesIO(open(f"{BASE_DIR}/images/base.png", "rb").read())
+        "base.png": io.BytesIO(open(f"{BASE_DIR}/images/zava_base.png", "rb").read())
     }
 
     if isinstance(request.image, str) and request.image.startswith("http"):
@@ -147,7 +147,7 @@ async def create_image(request: ImageCreateRequest) -> ImageResponse:
         # add mask
         mask_data = io.BytesIO(open(f"{BASE_DIR}/images/base_mask.png", "rb").read())
         form_data.add_field(
-            "mask", mask_data, filename="mask.png", content_type="image/png"
+            "mask", mask_data, filename="zava_mask.png", content_type="image/png"
         )
 
         async with session.post(endpoint, headers=headers, data=form_data) as response:
