@@ -10,6 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from api.storage import save_image_blob
 
+AZURE_IMAGE_DEPLOYMENT = os.environ.get("AZURE_IMAGE_DEPLOYMENT", "EMPTY")
 AZURE_IMAGE_ENDPOINT = os.environ.get("AZURE_IMAGE_ENDPOINT", "EMPTY").rstrip("/")
 AZURE_IMAGE_API_KEY = os.environ.get("AZURE_IMAGE_API_KEY", "EMPTY")
 BASE_URL = os.environ.get("BASE_URL", "http://localhost:8000").rstrip("/")
@@ -82,8 +83,7 @@ class ImageCreateRequest(BaseModel):
 )
 async def create_image(request: ImageCreateRequest) -> ImageResponse:
     api_version = "2025-04-01-preview"
-    deployment_name = "gpt-image-1"
-    endpoint = f"{AZURE_IMAGE_ENDPOINT}/openai/deployments/{deployment_name}/images/edits?api-version={api_version}"
+    endpoint = f"{AZURE_IMAGE_ENDPOINT}/openai/deployments/{AZURE_IMAGE_DEPLOYMENT}/images/edits?api-version={api_version}"
     size: str = "1024x1024"
     quality: str = "low"
 
@@ -110,7 +110,7 @@ async def create_image(request: ImageCreateRequest) -> ImageResponse:
 
     async with aiohttp.ClientSession() as session:
         headers = {
-            "api-key": AZURE_IMAGE_API_KEY,
+            "Authorization": f"Bearer {AZURE_IMAGE_API_KEY}",
         }
 
         form_data = aiohttp.FormData()

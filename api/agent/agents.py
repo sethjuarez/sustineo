@@ -14,6 +14,7 @@ from api.storage import save_image_blobs, save_video_blob
 from api.agent.common import execute_foundry_agent, post_request
 
 
+AZURE_IMAGE_DEPLOYMENT = os.environ.get("AZURE_IMAGE_DEPLOYMENT", "EMPTY")
 AZURE_IMAGE_ENDPOINT = os.environ.get("AZURE_IMAGE_ENDPOINT", "EMPTY").rstrip("/")
 AZURE_IMAGE_API_KEY = os.environ.get("AZURE_IMAGE_API_KEY", "EMPTY")
 AZURE_SORA_ENDPOINT = os.environ.get("AZURE_SORA_ENDPOINT", "EMPTY").rstrip("/")
@@ -24,7 +25,7 @@ AZURE_OPENAI_API_KEY = os.environ.get("AZURE_OPENAI_API_KEY", "EMPTY")
 
 @agent(
     name="Image Generation Agent",
-    description="This agent can generate a number of images based upon a detailed description. This agent is based on the GPT-Image-1 model and is capable of generating images in a variety of styles. It can also generate images in a specific style, such as a painting or a photograph. The agent can also generate images with different levels of detail and complexity.",
+    description="This agent can generate a number of images based upon a detailed description. This agent is based on a powerful image model and is capable of generating images in a variety of styles. It can also generate images in a specific style, such as a painting or a photograph. The agent can also generate images with different levels of detail and complexity.",
 )
 async def gpt_image_generation(
     description: Annotated[
@@ -44,8 +45,7 @@ async def gpt_image_generation(
     size: str = "1024x1024"
     quality: str = "low"
     api_version = "2025-04-01-preview"
-    deployment_name = "gpt-image-1"
-    endpoint = f"{AZURE_IMAGE_ENDPOINT}/openai/deployments/{deployment_name}/images/generations?api-version={api_version}"
+    endpoint = f"{AZURE_IMAGE_ENDPOINT}/openai/deployments/{AZURE_IMAGE_DEPLOYMENT}/images/generations?api-version={api_version}"
 
     await notify(
         id="image_generation", status="step in_progress", information="Executing Model"
@@ -243,8 +243,7 @@ async def gpt_image_edit(
     )
 
     api_version = "2025-04-01-preview"
-    deployment_name = "gpt-image-1"
-    endpoint = f"{AZURE_IMAGE_ENDPOINT}/openai/deployments/{deployment_name}/images/edits?api-version={api_version}"
+    endpoint = f"{AZURE_IMAGE_ENDPOINT}/openai/deployments/{AZURE_IMAGE_DEPLOYMENT}/images/edits?api-version={api_version}"
 
     await notify(
         id="image_edit", status="step in_progress", information="Executing Model"
