@@ -85,7 +85,7 @@ async def create_image(request: ImageCreateRequest) -> ImageResponse:
     api_version = "2025-04-01-preview"
     endpoint = f"{AZURE_IMAGE_ENDPOINT}/openai/deployments/{AZURE_IMAGE_DEPLOYMENT}/images/edits?api-version={api_version}"
     size: str = "1024x1024"
-    quality: str = "low"
+    quality: str = "standard"
 
     # image_dict: dict[str, io.BytesIO] = {
     #    img: io.BytesIO(open(f"{BASE_DIR}/images/{img}", "rb").read())

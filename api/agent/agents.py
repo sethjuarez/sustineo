@@ -43,7 +43,7 @@ async def gpt_image_generation(
     )
 
     size: str = "1024x1024"
-    quality: str = "low"
+    quality: str = "standard"
     api_version = "2025-04-01-preview"
     endpoint = f"{AZURE_IMAGE_ENDPOINT}/openai/deployments/{AZURE_IMAGE_DEPLOYMENT}/images/generations?api-version={api_version}"
 
@@ -250,7 +250,7 @@ async def gpt_image_edit(
     )
 
     size: str = "1024x1024"
-    quality: str = "low"
+    quality: str = "standard"
 
     # send image as multipart/form-data
     if image.startswith("data:image/jpeg;base64,"):
