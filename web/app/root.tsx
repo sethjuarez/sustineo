@@ -6,15 +6,9 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
-import { MsalProvider } from "@azure/msal-react";
-import { PublicClientApplication } from "@azure/msal-browser";
-import { msalConfig } from "store/authConfig";
 
 import type { Route } from "./+types/root";
 import "./global.scss";
-
-// Initialize MSAL instance
-const msalInstance = new PublicClientApplication(msalConfig);
 
 export const links: Route.LinksFunction = () => [
   // add favicon link
@@ -40,11 +34,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return (
-    <MsalProvider instance={msalInstance}>
-      <Outlet />
-    </MsalProvider>
-  );
+  return <Outlet />;
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
