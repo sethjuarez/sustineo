@@ -4,3 +4,10 @@
 __pycache__/
 .env
 .runs/
+
+# Web/Node
+web/.env
+web/.env.local
+web/node_modules/
+web/build/
+web/dist/
