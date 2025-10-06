@@ -65,45 +65,41 @@ interface ImageFunctionCall {
   image?: string;
 }
 
-export async function loader({ params }: Route.LoaderArgs) {
-  const designConfig = new DesignConfiguration();
-  try {
-    const defaultDesign = await designConfig.fetchDefaultDesign();
-    return defaultDesign;
-  } catch (error) {
-    console.error("Error fetching default design:", error);
-  }
-  // You can perform any data fetching or initialization here
-  // For example, you might want to fetch user data or initial settings
-  const design: Design = {
-    id: "default",
-    background: "/images/background.jpg",
-    default: true,
-    logo: "",
-    title: "BuildEvents",
-    sub_title: "by Contoso",
-    description: "Making Things Happen since 1935",
-  };
-
-  return design;
+export function meta() {
+  return [
+    { title: "BuildEvents by Contoso" },
+    { name: "description", content: "Making Things Happen since 1935" },
+  ];
 }
 
-export function meta({ data }: Route.MetaArgs) {
-  if (!data) {
-    return [
-      { title: "BuildEvents by Contoso" },
-      { name: "description", content: "Making Things Happen since 1935" },
-    ];
-  }
-  const title = `${data["title"] || "BuildEvents"} ${
-    data["sub_title"] || ""
-  }`;
-  const description = data["description"] || "Making Things Happen since 1935";
-  return [{ title: title }, { name: "description", content: description }];
-}
+const defaultDesign: Design = {
+  id: "default",
+  background: "/images/background.jpg",
+  default: true,
+  logo: "",
+  title: "BuildEvents",
+  sub_title: "by Contoso",
+  description: "Making Things Happen since 1935",
+};
 
-export default function App({ loaderData }: Route.ComponentProps) {
-  const { background, logo, title, sub_title, description } = loaderData as unknown as Design;
+export default function App() {
+  const [design, setDesign] = useState<Design>(defaultDesign);
+
+  useEffect(() => {
+    const fetchDesign = async () => {
+      const designConfig = new DesignConfiguration();
+      try {
+        const defaultDesign = await designConfig.fetchDefaultDesign();
+        setDesign(defaultDesign);
+      } catch (error) {
+        console.error("Error fetching default design:", error);
+      }
+    };
+
+    fetchDesign();
+  }, []);
+
+  const { background, logo, title, sub_title, description } = design;
 
 
   const location = useLocation();
