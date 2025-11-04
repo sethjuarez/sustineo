@@ -145,7 +145,7 @@ async def create_image(request: ImageCreateRequest) -> ImageResponse:
         form_data.add_field("quality", quality, content_type="text/plain")
 
         # add mask
-        mask_data = io.BytesIO(open(f"{BASE_DIR}/images/base_mask.png", "rb").read())
+        mask_data = io.BytesIO(open(f"{BASE_DIR}/images/zava_mask.png", "rb").read())
         form_data.add_field(
             "mask", mask_data, filename="zava_mask.png", content_type="image/png"
         )
